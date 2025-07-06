@@ -243,13 +243,13 @@
         query,
         setLogLevel,
       } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
+      import { initializeApp } from "firebase/app";
+      import { getAnalytics } from "firebase/analytics";
       document.addEventListener("DOMContentLoaded", () => {
         // ВАЖНО: Вставьте сюда вашу конфигурацию из Firebase.
         // Замените этот демонстрационный объект на тот, который вы скопировали из своего проекта Firebase.
         // Если этого не сделать, приложение не сможет подключиться к базе данных.
-        import { initializeApp } from "firebase/app";
-        import { getAnalytics } from "firebase/analytics";
+
         const firebaseConfig = {
           apiKey: "AIzaSyBGAuZan6tfRXlzyJ3vxAEd9NA3m43xPos",
           authDomain: "registration-a70d6.firebaseapp.com",
