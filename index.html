@@ -77,10 +77,9 @@
         color: white;
       }
 
-      /* Стили для сетки */
       .schedule-grid {
         display: grid;
-        grid-template-columns: 6rem repeat(4, 1fr); /* Время + 4 сотрудника */
+        grid-template-columns: 6rem repeat(4, 1fr);
         gap: 4px;
       }
       .grid-header {
@@ -96,27 +95,32 @@
         min-height: 80px;
         transition: background-color 0.3s ease;
       }
-
-      /* Стили для окраски карточек записей */
       .cell-scheduled {
-        background-color: #1e3a8a; /* Синий */
+        background-color: #1e3a8a;
         border: 1px solid #3b82f6;
       }
       .cell-in-progress {
-        background-color: #92400e; /* Желтый/Янтарный */
+        background-color: #92400e;
         border: 1px solid #f59e0b;
       }
       .cell-completed {
-        background-color: #065f46; /* Зеленый */
+        background-color: #065f46;
         border: 1px solid #10b981;
       }
       .cell-cancelled {
-        background-color: #991b1b; /* Красный */
+        background-color: #991b1b;
         border: 1px solid #ef4444;
       }
     </style>
   </head>
   <body>
+    <!-- Сообщение об ошибке конфигурации -->
+    <div id="config-error" class="hidden fixed top-0 left-0 right-0 bg-red-800 text-white p-4 text-center z-50">
+      <strong>Ошибка конфигурации Firebase!</strong> Пожалуйста, откройте этот HTML-файл, найдите объект
+      `firebaseConfig` в теге `script` и замените значения-заполнители (`YOUR_API_KEY` и т.д.) на ваши реальные ключи из
+      проекта Firebase.
+    </div>
+
     <div class="container mx-auto p-4 md:p-8">
       <header class="text-center mb-8">
         <h1 class="text-3xl md:text-4xl font-bold text-white">Система записи на сервисное обслуживание</h1>
@@ -126,7 +130,6 @@
         </div>
       </header>
 
-      <!-- Форма для добавления записи -->
       <div id="booking-form-container" class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
         <h2 class="text-2xl font-semibold mb-4 text-white">Новая запись</h2>
         <form id="booking-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -165,9 +168,7 @@
           </div>
           <div>
             <label for="appointmentTime" class="block text-sm font-medium text-gray-300 mb-1">Время записи</label>
-            <select id="appointmentTime" class="w-full form-input p-2" required>
-              <!-- Опции будут добавлены с помощью JS -->
-            </select>
+            <select id="appointmentTime" class="w-full form-input p-2" required></select>
           </div>
           <div>
             <label for="appointmentDuration" class="block text-sm font-medium text-gray-300 mb-1"
@@ -199,7 +200,6 @@
         </form>
       </div>
 
-      <!-- Ежедневник -->
       <div id="schedule-container" class="bg-gray-800 p-6 rounded-lg shadow-lg">
         <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
           <h2 class="text-2xl font-semibold text-white">План на день</h2>
@@ -209,14 +209,11 @@
           </div>
         </div>
         <div id="daily-schedule-grid-container" class="overflow-x-auto">
-          <div id="daily-schedule-grid" class="schedule-grid">
-            <!-- Сетка ежедневника будет сгенерирована здесь -->
-          </div>
+          <div id="daily-schedule-grid" class="schedule-grid"></div>
         </div>
       </div>
     </div>
 
-    <!-- Модальное окно для подтверждения -->
     <div id="confirmation-modal" class="modal-backdrop hidden">
       <div class="bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-sm mx-4">
         <h3 class="text-lg font-bold text-white mb-4" id="modal-title">Подтвердите действие</h3>
@@ -229,89 +226,366 @@
     </div>
 
     <script type="module">
-      <script type="module">
-    // Ожидаем, пока вся HTML-структура страницы будет загружена
-    document.addEventListener('DOMContentLoaded', () => {
-        // Импорты Firebase
-        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
-        const { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
-        const { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, setLogLevel } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+      import {
+        getAuth,
+        signInAnonymously,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        onSnapshot,
+        doc,
+        updateDoc,
+        deleteDoc,
+        query,
+        setLogLevel,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        setLogLevel('debug');
+      document.addEventListener("DOMContentLoaded", () => {
+        // ВАЖНО: Вставьте сюда вашу конфигурацию из Firebase.
+        // Замените этот демонстрационный объект на тот, который вы скопировали из своего проекта Firebase.
+        // Если этого не сделать, приложение не сможет подключиться к базе данных.
+        const firebaseConfig = {
+          apiKey: "AIzaSyBGAuZan6tfRXlzyJ3vxAEd9NA3m43xPos",
+          authDomain: "registration-a70d6.firebaseapp.com",
+          projectId: "registration-a70d6",
+          storageBucket: "registration-a70d6.firebasestorage.app",
+          messagingSenderId: "662670826790",
+          appId: "1:662670826790:web:5b85a49c6ee618140ef5e7",
+          measurementId: "G-QV8HBNH7XQ",
+        };
 
-        // --- ВАЖНО: Вставьте сюда вашу конфигурацию из Firebase ---
-        // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+        // Проверка на наличие демонстрационных ключей
+        const configErrorDiv = document.getElementById("config-error");
+        if (firebaseConfig.apiKey === "YOUR_API_KEY") {
+          configErrorDiv.classList.remove("hidden");
+          // Блокируем основную часть приложения
+          document.getElementById("booking-form-container").style.display = "none";
+          document.getElementById("schedule-container").style.display = "none";
+          return; // Останавливаем выполнение скрипта
+        }
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBGAuZan6tfRXlzyJ3vxAEd9NA3m43xPos",
-  authDomain: "registration-a70d6.firebaseapp.com",
-  projectId: "registration-a70d6",
-  storageBucket: "registration-a70d6.firebasestorage.app",
-  messagingSenderId: "662670826790",
-  appId: "1:662670826790:web:5b85a49c6ee618140ef5e7",
-  measurementId: "G-QV8HBNH7XQ"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-        // ---------------------------------------------------------
-
-        const appId = 'service-booking-default';
+        // Инициализация Firebase
+        const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        setLogLevel("debug");
 
         // Все DOM элементы
-        const bookingForm = document.getElementById('booking-form');
-        const userIdSpan = document.getElementById('userId');
-        const modal = document.getElementById('confirmation-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalBody = document.getElementById('modal-body');
-        const modalCancelBtn = document.getElementById('modal-cancel-btn');
-        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
-        const scheduleDateInput = document.getElementById('scheduleDate');
-        const dailyScheduleGrid = document.getElementById('daily-schedule-grid');
-        const appointmentDateInput = document.getElementById('appointmentDate');
-        const appointmentTimeInput = document.getElementById('appointmentTime');
-        const appointmentDurationInput = document.getElementById('appointmentDuration');
-        const employeeSelect = document.getElementById('employee');
-        const carBrandSelect = document.getElementById('carBrand');
-        const carModelSelect = document.getElementById('carModel');
-        const formError = document.getElementById('form-error');
+        const bookingForm = document.getElementById("booking-form");
+        const userIdSpan = document.getElementById("userId");
+        const modal = document.getElementById("confirmation-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalBody = document.getElementById("modal-body");
+        const modalCancelBtn = document.getElementById("modal-cancel-btn");
+        const modalConfirmBtn = document.getElementById("modal-confirm-btn");
+        const scheduleDateInput = document.getElementById("scheduleDate");
+        const dailyScheduleGrid = document.getElementById("daily-schedule-grid");
+        const appointmentDateInput = document.getElementById("appointmentDate");
+        const appointmentTimeInput = document.getElementById("appointmentTime");
+        const appointmentDurationInput = document.getElementById("appointmentDuration");
+        const employeeSelect = document.getElementById("employee");
+        const carBrandSelect = document.getElementById("carBrand");
+        const carModelSelect = document.getElementById("carModel");
+        const formError = document.getElementById("form-error");
 
-        // Глобальные переменные
         let currentUser = null;
         let currentUserId = null;
         let allAppointments = [];
-        let selectedDate = new Date().toISOString().split('T')[0];
-        const employees = Array.from(employeeSelect.options).map(opt => opt.value);
+        let selectedDate = new Date().toISOString().split("T")[0];
+        const employees = Array.from(employeeSelect.options).map((opt) => opt.value);
 
         const WORK_DAY_START_HOUR = 9;
         const WORK_DAY_END_HOUR = 20;
 
         const carData = {
-            'KIA': ['Rio', 'Ceed', 'Sportage', 'K5', 'Seltos'],
-            'Chevrolet': ['Cobalt', 'Nexia', 'Spark', 'Damas', 'Onix'],
-            'JAC': ['J7', 'JS4', 'S3', 'T6'],
-            'Jetour': ['X70 Plus', 'X90 Plus', 'Dashing', 'T2']
+          KIA: ["Rio", "Ceed", "Sportage", "K5", "Seltos"],
+          Chevrolet: ["Cobalt", "Nexia", "Spark", "Damas", "Onix"],
+          JAC: ["J7", "JS4", "S3", "T6"],
+          Jetour: ["X70 Plus", "X90 Plus", "Dashing", "T2"],
         };
 
-        // Все функции остаются без изменений...
-        // ... (здесь должен быть весь остальной JS-код из предыдущей версии) ...
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            currentUser = user;
+            currentUserId = user.uid;
+            userIdSpan.textContent = currentUserId;
+            listenForAppointments();
+          } else {
+            userIdSpan.textContent = "Анонимный";
+          }
+        });
 
-        // Просто скопируйте все функции отсюда и до конца скрипта из предыдущего файла
-        
-        // --- ЗАПУСК ПРИЛОЖЕНИЯ ---
+        async function signIn() {
+          try {
+            await signInAnonymously(auth);
+          } catch (error) {
+            console.error("Ошибка аутентификации:", error);
+            userIdSpan.textContent = "Ошибка входа";
+          }
+        }
+
+        function populateTimeSelect() {
+          appointmentTimeInput.innerHTML = "";
+          for (let hour = WORK_DAY_START_HOUR; hour < WORK_DAY_END_HOUR; hour++) {
+            const option = document.createElement("option");
+            const timeString = `${String(hour).padStart(2, "0")}:00`;
+            option.value = timeString;
+            option.textContent = timeString;
+            appointmentTimeInput.appendChild(option);
+          }
+        }
+
+        function populateCarBrands() {
+          carBrandSelect.innerHTML = '<option value="">Выберите марку</option>';
+          for (const brand in carData) {
+            const option = document.createElement("option");
+            option.value = brand;
+            option.textContent = brand;
+            carBrandSelect.appendChild(option);
+          }
+        }
+
+        function updateCarModels() {
+          const selectedBrand = carBrandSelect.value;
+          carModelSelect.innerHTML = '<option value="">Выберите модель</option>';
+          carModelSelect.disabled = true;
+
+          if (selectedBrand && carData[selectedBrand]) {
+            const models = carData[selectedBrand];
+            models.forEach((model) => {
+              const option = document.createElement("option");
+              option.value = model;
+              option.textContent = model;
+              carModelSelect.appendChild(option);
+            });
+            carModelSelect.disabled = false;
+          }
+        }
+
+        function initializeUI() {
+          appointmentDateInput.value = selectedDate;
+          scheduleDateInput.value = selectedDate;
+          scheduleDateInput.addEventListener("change", (e) => {
+            selectedDate = e.target.value;
+            renderDailySchedule();
+          });
+          populateTimeSelect();
+          populateCarBrands();
+          carBrandSelect.addEventListener("change", updateCarModels);
+        }
+
+        function renderDailySchedule() {
+          dailyScheduleGrid.innerHTML = "";
+          const appointmentsForDay = allAppointments.filter((app) => app.date === selectedDate);
+
+          const header = document.createElement("div");
+          header.className = "grid-header contents";
+          header.innerHTML =
+            `<div class="p-2 text-center font-bold border-b-2 border-gray-600">Время</div>` +
+            employees
+              .map((emp) => `<div class="p-2 text-center font-bold border-b-2 border-gray-600">${emp}</div>`)
+              .join("");
+          dailyScheduleGrid.appendChild(header);
+
+          const coveredSlots = new Set();
+
+          for (let hour = WORK_DAY_START_HOUR; hour < WORK_DAY_END_HOUR; hour++) {
+            const timeCell = document.createElement("div");
+            timeCell.className = "time-cell p-2 text-right font-semibold text-gray-400 border-r border-gray-700";
+            timeCell.textContent = `${String(hour).padStart(2, "0")}:00`;
+            dailyScheduleGrid.appendChild(timeCell);
+
+            employees.forEach((employee, empIndex) => {
+              const slotId = `${hour}-${empIndex}`;
+              if (coveredSlots.has(slotId)) return;
+
+              const appointment = appointmentsForDay.find((app) => {
+                const appHour = parseInt(app.time.split(":")[0]);
+                return app.employee === employee && appHour === hour;
+              });
+
+              const cell = document.createElement("div");
+
+              if (appointment) {
+                const duration = parseInt(appointment.duration) || 1;
+                for (let i = 0; i < duration; i++) {
+                  if (hour + i < WORK_DAY_END_HOUR) {
+                    coveredSlots.add(`${hour + i}-${empIndex}`);
+                  }
+                }
+
+                const statusClasses = {
+                  Запланировано: "cell-scheduled",
+                  "В работе": "cell-in-progress",
+                  Завершено: "cell-completed",
+                  Отменено: "cell-cancelled",
+                };
+                const cellStatusClass = statusClasses[appointment.status] || "bg-gray-700";
+
+                cell.className = `employee-cell p-2 rounded-lg flex flex-col justify-between relative ${cellStatusClass}`;
+                cell.style.gridRow = `span ${duration}`;
+                cell.style.gridColumn = `${empIndex + 2}`;
+
+                cell.innerHTML = `
+                                <div class="text-xs overflow-hidden flex-grow">
+                                    <div class="font-bold text-white truncate">${appointment.customerName}</div>
+                                    <div class="text-gray-200 truncate">${appointment.carModel}</div>
+                                    <div class="text-gray-300 truncate">${appointment.serviceType}</div>
+                                </div>
+                                <div class="mt-1">
+                                    <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-black/30 block w-full text-center mb-1">${
+                                      appointment.status
+                                    }</span>
+                                    <div class="flex gap-1 justify-center">
+                                        ${
+                                          appointment.status === "Запланировано"
+                                            ? `<button data-id="${appointment.id}" class="btn-action-start btn btn-warning text-xs p-1 flex-grow" title="В работу">▶</button>`
+                                            : ""
+                                        }
+                                        ${
+                                          appointment.status === "В работе"
+                                            ? `<button data-id="${appointment.id}" class="btn-action-complete btn btn-success text-xs p-1 flex-grow" title="Завершить">✓</button>`
+                                            : ""
+                                        }
+                                        ${
+                                          appointment.status !== "Завершено" && appointment.status !== "Отменено"
+                                            ? `<button data-id="${appointment.id}" class="btn-action-cancel btn btn-danger text-xs p-1 flex-grow" title="Отменить">✕</button>`
+                                            : ""
+                                        }
+                                    </div>
+                                </div>`;
+              } else {
+                cell.style.gridRow = `span 1`;
+                cell.style.gridColumn = `${empIndex + 2}`;
+                cell.className =
+                  "employee-cell p-2 rounded-lg flex items-center justify-center bg-gray-900/50 border-2 border-dashed border-gray-700 hover:bg-gray-700 transition";
+                cell.innerHTML = `<button data-time="${String(hour).padStart(
+                  2,
+                  "0"
+                )}:00" data-employee="${employee}" class="btn-action-book text-gray-500 hover:text-white text-2xl">+</button>`;
+              }
+              dailyScheduleGrid.appendChild(cell);
+            });
+          }
+        }
+
+        const listenForAppointments = () => {
+          if (!currentUserId) return;
+          const q = query(collection(db, `artifacts/service-booking-default/public/data/appointments`));
+          onSnapshot(
+            q,
+            (querySnapshot) => {
+              allAppointments = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+              renderDailySchedule();
+            },
+            (error) => {
+              console.error("Ошибка при получении данных Firestore:", error);
+              dailyScheduleGrid.innerHTML = `<div class="col-span-full text-center p-8 text-red-400">Ошибка загрузки данных. Проверьте правила безопасности Firestore.</div>`;
+            }
+          );
+        };
+
+        bookingForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          formError.classList.add("hidden");
+
+          const selectedTime = appointmentTimeInput.value;
+          const selectedHour = parseInt(selectedTime.split(":")[0]);
+          const duration = parseInt(appointmentDurationInput.value) || 1;
+          const brand = carBrandSelect.value;
+          const model = carModelSelect.value;
+
+          if (selectedHour + duration > WORK_DAY_END_HOUR) {
+            formError.textContent = `Ошибка: Запись выходит за рамки рабочего дня (до ${WORK_DAY_END_HOUR}:00).`;
+            formError.classList.remove("hidden");
+            return;
+          }
+          if (!brand || !model) {
+            formError.textContent = "Пожалуйста, выберите марку и модель автомобиля.";
+            formError.classList.remove("hidden");
+            return;
+          }
+
+          const newAppointment = {
+            customerName: document.getElementById("customerName").value,
+            customerPhone: document.getElementById("customerPhone").value,
+            carModel: `${brand} ${model}`,
+            serviceType: document.getElementById("serviceType").value,
+            date: appointmentDateInput.value,
+            time: selectedTime,
+            duration: duration,
+            employee: employeeSelect.value,
+            status: "Запланировано",
+            createdBy: currentUserId,
+          };
+
+          try {
+            await addDoc(collection(db, `artifacts/service-booking-default/public/data/appointments`), newAppointment);
+            bookingForm.reset();
+            appointmentDateInput.value = new Date().toISOString().split("T")[0];
+            populateTimeSelect();
+            populateCarBrands();
+            updateCarModels();
+          } catch (error) {
+            console.error("Ошибка добавления записи: ", error);
+            formError.textContent = "Не удалось добавить запись. Попробуйте снова.";
+            formError.classList.remove("hidden");
+          }
+        });
+
+        dailyScheduleGrid.addEventListener("click", (e) => {
+          const target = e.target.closest("button");
+          if (!target) return;
+          const id = target.dataset.id;
+
+          if (target.classList.contains("btn-action-cancel")) {
+            showConfirmationModal("Отменить запись?", "Вы уверены?", "btn-danger", () =>
+              updateAppointmentStatus(id, "Отменено")
+            );
+          } else if (target.classList.contains("btn-action-start")) {
+            updateAppointmentStatus(id, "В работе");
+          } else if (target.classList.contains("btn-action-complete")) {
+            updateAppointmentStatus(id, "Завершено");
+          } else if (target.classList.contains("btn-action-book")) {
+            appointmentDateInput.value = selectedDate;
+            appointmentTimeInput.value = target.dataset.time;
+            employeeSelect.value = target.dataset.employee;
+            document.getElementById("booking-form-container").scrollIntoView({ behavior: "smooth" });
+            document.getElementById("customerName").focus();
+          }
+        });
+
+        async function updateAppointmentStatus(id, newStatus) {
+          const appointmentRef = doc(db, `artifacts/service-booking-default/public/data/appointments`, id);
+          await updateDoc(appointmentRef, { status: newStatus });
+        }
+
+        let confirmCallback = null;
+        function showConfirmationModal(title, body, confirmClass, callback) {
+          modalTitle.textContent = title;
+          modalBody.textContent = body;
+          modalConfirmBtn.className = `btn ${confirmClass}`;
+          confirmCallback = callback;
+          modal.classList.remove("hidden");
+        }
+        function hideModal() {
+          modal.classList.add("hidden");
+          confirmCallback = null;
+        }
+        modalCancelBtn.addEventListener("click", hideModal);
+        modalConfirmBtn.addEventListener("click", () => {
+          if (confirmCallback) confirmCallback();
+          hideModal();
+        });
+
+        // Запускаем приложение
         initializeUI();
         signIn();
-    });
-</script>
+      });
     </script>
   </body>
 </html>
