@@ -35,6 +35,7 @@
         border: 1px solid #4b5563;
         color: #f3f4f6;
         border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem; /* Уменьшаем padding */
       }
       .form-input:focus {
         outline: none;
@@ -44,6 +45,10 @@
       .form-input:disabled {
         background-color: #4b5563;
         cursor: not-allowed;
+        opacity: 0.5;
+      }
+      .form-input option:disabled {
+        color: #9ca3af;
       }
       .btn {
         padding: 0.5rem 1rem;
@@ -85,7 +90,6 @@
 
       .schedule-grid {
         display: grid;
-        /* grid-template-columns будет задаваться через JS */
         gap: 4px;
       }
       .grid-header {
@@ -98,7 +102,7 @@
         grid-column: 1 / 2;
       }
       .employee-cell {
-        min-height: 80px;
+        min-height: 60px; /* Уменьшенный масштаб */
         transition: background-color 0.3s ease;
       }
       .cell-scheduled {
@@ -117,31 +121,73 @@
         background-color: #991b1b;
         border: 1px solid #ef4444;
       }
+
+      .dragging {
+        opacity: 0.5;
+        border: 2px dashed #fff;
+      }
+      .drag-over {
+        background-color: #2563eb !important;
+      }
+      .resize-handle {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 10px;
+        cursor: ns-resize;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .resize-handle::after {
+        content: "";
+        width: 40px;
+        height: 4px;
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+      }
+      .slot-selected {
+        background-color: #2563eb !important;
+        border-color: #60a5fa !important;
+      }
+      .view-btn.active {
+        background-color: #3b82f6;
+        font-weight: 700;
+      }
     </style>
   </head>
   <body class="flex flex-col">
     <!-- Верхняя статичная часть -->
     <div class="flex-shrink-0">
-      <div class="container mx-auto px-4 md:px-8 pt-4 md:pt-8">
-        <header class="text-center mb-8">
-          <h1 class="text-3xl md:text-4xl font-bold text-white">Автономная система записи</h1>
-          <p class="text-gray-400 mt-2">Все данные сбрасываются при перезагрузке страницы</p>
+      <div class="container mx-auto px-4 md:px-8 pt-4">
+        <header class="text-center mb-4">
+          <h1 class="text-2xl md:text-3xl font-bold text-white">Автономная система записи</h1>
         </header>
 
-        <div id="booking-form-container" class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
-          <h2 class="text-2xl font-semibold mb-4 text-white">Новая запись</h2>
-          <form id="booking-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="booking-form-container" class="bg-gray-800 p-4 rounded-lg shadow-lg mb-4">
+          <form id="booking-form" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 items-end">
             <div>
-              <label for="customerName" class="block text-sm font-medium text-gray-300 mb-1">Имя клиента</label>
-              <input type="text" id="customerName" class="w-full form-input p-2" required />
+              <label for="customerName" class="block text-xs font-medium text-gray-300 mb-1">Имя клиента</label>
+              <input type="text" id="customerName" class="w-full form-input" required />
             </div>
             <div>
-              <label for="customerPhone" class="block text-sm font-medium text-gray-300 mb-1">Телефон клиента</label>
-              <input type="tel" id="customerPhone" class="w-full form-input p-2" required />
+              <label for="customerPhone" class="block text-xs font-medium text-gray-300 mb-1">Телефон</label>
+              <input type="tel" id="customerPhone" class="w-full form-input" required />
             </div>
             <div>
-              <label for="serviceType" class="block text-sm font-medium text-gray-300 mb-1">Тип услуги</label>
-              <select id="serviceType" class="w-full form-input p-2">
+              <label for="carBrand" class="block text-xs font-medium text-gray-300 mb-1">Марка</label>
+              <select id="carBrand" class="w-full form-input" required></select>
+            </div>
+            <div>
+              <label for="carModel" class="block text-xs font-medium text-gray-300 mb-1">Модель</label>
+              <select id="carModel" class="w-full form-input" required disabled>
+                <option value="">Сначала выберите марку</option>
+              </select>
+            </div>
+            <div>
+              <label for="serviceType" class="block text-xs font-medium text-gray-300 mb-1">Тип услуги</label>
+              <select id="serviceType" class="w-full form-input">
                 <option>Техническое обслуживание (ТО)</option>
                 <option>Диагностика</option>
                 <option>Ремонт двигателя</option>
@@ -151,31 +197,21 @@
               </select>
             </div>
             <div>
-              <label for="carBrand" class="block text-sm font-medium text-gray-300 mb-1">Марка автомобиля</label>
-              <select id="carBrand" class="w-full form-input p-2" required></select>
+              <label for="appointmentDate" class="block text-xs font-medium text-gray-300 mb-1">Дата</label>
+              <input type="date" id="appointmentDate" class="w-full form-input" required />
             </div>
             <div>
-              <label for="carModel" class="block text-sm font-medium text-gray-300 mb-1">Модель автомобиля</label>
-              <select id="carModel" class="w-full form-input p-2" required disabled>
-                <option value="">Сначала выберите марку</option>
-              </select>
+              <label for="appointmentTime" class="block text-xs font-medium text-gray-300 mb-1">Время</label>
+              <select id="appointmentTime" class="w-full form-input" required></select>
             </div>
             <div>
-              <label for="appointmentDate" class="block text-sm font-medium text-gray-300 mb-1">Дата записи</label>
-              <input type="date" id="appointmentDate" class="w-full form-input p-2" required />
-            </div>
-            <div>
-              <label for="appointmentTime" class="block text-sm font-medium text-gray-300 mb-1">Время записи</label>
-              <select id="appointmentTime" class="w-full form-input p-2" required></select>
-            </div>
-            <div>
-              <label for="appointmentDuration" class="block text-sm font-medium text-gray-300 mb-1"
-                >Длительность (часы)</label
+              <label for="appointmentDuration" class="block text-xs font-medium text-gray-300 mb-1"
+                >Длительность (ч)</label
               >
               <input
                 type="number"
                 id="appointmentDuration"
-                class="w-full form-input p-2"
+                class="w-full form-input"
                 value="1"
                 min="1"
                 max="8"
@@ -183,8 +219,8 @@
               />
             </div>
             <div>
-              <label for="employee" class="block text-sm font-medium text-gray-300 mb-1">Сотрудник</label>
-              <select id="employee" class="w-full form-input p-2">
+              <label for="employee" class="block text-xs font-medium text-gray-300 mb-1">Сотрудник</label>
+              <select id="employee" class="w-full form-input">
                 <option>Нурасыл</option>
                 <option>Куаныш</option>
                 <option>Айдос</option>
@@ -192,11 +228,16 @@
                 <option>Нурсултан</option>
               </select>
             </div>
-            <div class="lg:col-span-3">
-              <button type="submit" class="btn btn-primary w-full lg:w-auto">Записать клиента</button>
-              <p id="form-error" class="text-red-400 text-sm mt-2 hidden"></p>
+            <div class="lg:col-span-2">
+              <label for="comment" class="block text-xs font-medium text-gray-300 mb-1">Доп. комментарии</label>
+              <input type="text" id="comment" class="w-full form-input" placeholder="Особые отметки..." />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-transparent mb-1 hidden sm:block">Действие</label>
+              <button type="submit" class="btn btn-primary w-full">Записать</button>
             </div>
           </form>
+          <p id="form-error" class="text-red-400 text-sm mt-2 hidden"></p>
         </div>
       </div>
     </div>
@@ -204,16 +245,40 @@
     <!-- Нижняя прокручиваемая часть -->
     <div class="flex-grow overflow-y-auto">
       <div class="container mx-auto px-4 md:px-8 pb-4 md:pb-8">
-        <div id="schedule-container" class="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-            <h2 class="text-2xl font-semibold text-white">План на день</h2>
-            <div>
-              <label for="scheduleDate" class="text-sm font-medium text-gray-300 mr-2">Выберите дату:</label>
-              <input type="date" id="scheduleDate" class="form-input p-2" />
+        <div id="schedule-container" class="bg-gray-800 p-4 rounded-lg shadow-lg">
+          <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+            <h2 class="text-xl font-semibold text-white">План на день</h2>
+            <div class="flex items-center gap-4">
+              <div id="view-switcher" class="flex items-center gap-2 bg-gray-700 p-1 rounded-lg">
+                <button data-view="grid" class="view-btn btn btn-secondary text-xs px-3 py-1 active">Сетка</button>
+                <button data-view="list" class="view-btn btn btn-secondary text-xs px-3 py-1">Список</button>
+                <button data-view="chart" class="view-btn btn btn-secondary text-xs px-3 py-1">Загрузка</button>
+              </div>
+              <div class="flex items-center">
+                <button id="prev-day-btn" class="btn btn-secondary p-2 rounded-r-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fill-rule="evenodd"
+                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+                <input type="date" id="scheduleDate" class="form-input p-2 rounded-none text-center" />
+                <button id="next-day-btn" class="btn btn-secondary p-2 rounded-l-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fill-rule="evenodd"
+                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
-          <div id="daily-schedule-grid-container" class="overflow-x-auto">
-            <div id="daily-schedule-grid" class="schedule-grid"></div>
+          <div id="schedule-view-container" class="overflow-x-auto">
+            <!-- Содержимое вида будет рендериться здесь -->
           </div>
         </div>
       </div>
@@ -235,6 +300,7 @@
         // ================== Глобальное состояние приложения ==================
         let allAppointments = [];
         let selectedDate = new Date().toISOString().split("T")[0];
+        let currentView = "grid"; // 'grid', 'list', 'chart'
 
         // ================== Константы и данные ==================
         const WORK_DAY_START_HOUR = 9;
@@ -254,14 +320,18 @@
         const modalCancelBtn = document.getElementById("modal-cancel-btn");
         const modalConfirmBtn = document.getElementById("modal-confirm-btn");
         const scheduleDateInput = document.getElementById("scheduleDate");
-        const dailyScheduleGrid = document.getElementById("daily-schedule-grid");
+        const scheduleViewContainer = document.getElementById("schedule-view-container");
         const appointmentDateInput = document.getElementById("appointmentDate");
         const appointmentTimeInput = document.getElementById("appointmentTime");
         const appointmentDurationInput = document.getElementById("appointmentDuration");
         const employeeSelect = document.getElementById("employee");
         const carBrandSelect = document.getElementById("carBrand");
         const carModelSelect = document.getElementById("carModel");
+        const commentInput = document.getElementById("comment");
         const formError = document.getElementById("form-error");
+        const viewSwitcher = document.getElementById("view-switcher");
+        const prevDayBtn = document.getElementById("prev-day-btn");
+        const nextDayBtn = document.getElementById("next-day-btn");
 
         function getEmployees() {
           return Array.from(employeeSelect.options).map((opt) => opt.value);
@@ -277,6 +347,30 @@
             option.value = timeString;
             option.textContent = timeString;
             appointmentTimeInput.appendChild(option);
+          }
+        }
+
+        function updateAvailableTimes() {
+          const now = new Date();
+          const todayString = now.toISOString().split("T")[0];
+          const currentHour = now.getHours();
+
+          const isToday = appointmentDateInput.value === todayString;
+
+          Array.from(appointmentTimeInput.options).forEach((option) => {
+            const optionHour = parseInt(option.value.split(":")[0]);
+            if (isToday && optionHour < currentHour) {
+              option.disabled = true;
+            } else {
+              option.disabled = false;
+            }
+          });
+
+          if (appointmentTimeInput.options[appointmentTimeInput.selectedIndex]?.disabled) {
+            const firstEnabledOption = Array.from(appointmentTimeInput.options).find((opt) => !opt.disabled);
+            if (firstEnabledOption) {
+              appointmentTimeInput.value = firstEnabledOption.value;
+            }
           }
         }
 
@@ -307,8 +401,24 @@
           }
         }
 
-        function renderDailySchedule() {
-          dailyScheduleGrid.innerHTML = "";
+        function renderActiveView() {
+          switch (currentView) {
+            case "grid":
+              renderGridView();
+              break;
+            case "list":
+              renderListView();
+              break;
+            case "chart":
+              renderChartView();
+              break;
+          }
+        }
+
+        function renderGridView() {
+          scheduleViewContainer.innerHTML = `<div id="daily-schedule-grid" class="schedule-grid"></div>`;
+          const dailyScheduleGrid = document.getElementById("daily-schedule-grid");
+
           const employees = getEmployees();
           dailyScheduleGrid.style.gridTemplateColumns = `6rem repeat(${employees.length}, 1fr)`;
 
@@ -324,6 +434,7 @@
           dailyScheduleGrid.appendChild(header);
 
           const coveredSlots = new Set();
+          const now = new Date();
 
           for (let hour = WORK_DAY_START_HOUR; hour < WORK_DAY_END_HOUR; hour++) {
             const timeCell = document.createElement("div");
@@ -343,6 +454,9 @@
               const cell = document.createElement("div");
 
               if (appointment) {
+                cell.setAttribute("draggable", "true");
+                cell.dataset.appointmentId = appointment.id;
+
                 const duration = parseInt(appointment.duration) || 1;
                 for (let i = 0; i < duration; i++) {
                   if (hour + i < WORK_DAY_END_HOUR) {
@@ -362,11 +476,22 @@
                 cell.style.gridRow = `span ${duration}`;
                 cell.style.gridColumn = `${empIndex + 2}`;
 
+                const commentHTML = appointment.comment
+                  ? `<div class="text-gray-300 text-xs italic truncate mt-1 flex items-start gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.839 8.839 0 01-4.082-.978l-1.804 1.804A1 1 0 013 17.207V15.5a1 1 0 01.293-.707l1.804-1.804A7.96 7.96 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM4.707 14.293L3 12.586V15a1 1 0 01-1-1v-2.586l-1.293-1.293a1 1 0 011.414-1.414L3 11.172l1.293-1.293a1 1 0 111.414 1.414L4.707 12.586z" clip-rule="evenodd" /></svg>
+                                    <span class="truncate">${appointment.comment}</span>
+                                   </div>`
+                  : "";
+
                 cell.innerHTML = `
                                 <div class="text-xs overflow-hidden flex-grow">
                                     <div class="font-bold text-white truncate">${appointment.customerName}</div>
+                                    <div class="text-gray-300 truncate flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.518.759a1.192 1.192 0 00-.113 1.948l1.757 3.512a1.192 1.192 0 001.948-.113l.759-1.518a1 1 0 011.06-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" /></svg>
+                                        ${appointment.customerPhone}
+                                    </div>
                                     <div class="text-gray-200 truncate">${appointment.carModel}</div>
-                                    <div class="text-gray-300 truncate">${appointment.serviceType}</div>
+                                    ${commentHTML}
                                 </div>
                                 <div class="mt-1">
                                     <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-black/30 block w-full text-center mb-1">${
@@ -375,7 +500,8 @@
                                     <div class="flex gap-1 justify-center">
                                         ${
                                           appointment.status === "Запланировано"
-                                            ? `<button data-id="${appointment.id}" class="btn-action-start btn btn-warning text-xs p-1 flex-grow" title="В работу">▶</button>`
+                                            ? `<button data-id="${appointment.id}" class="btn-action-start btn btn-warning text-xs p-1 flex-grow" title="В работу">▶</button>
+                                               <button data-id="${appointment.id}" class="btn-action-cancel btn btn-danger text-xs p-1 flex-grow" title="Отменить">✕</button>`
                                             : ""
                                         }
                                         ${
@@ -384,45 +510,137 @@
                                             : ""
                                         }
                                         ${
-                                          appointment.status !== "Завершено" && appointment.status !== "Отменено"
-                                            ? `<button data-id="${appointment.id}" class="btn-action-cancel btn btn-danger text-xs p-1 flex-grow" title="Отменить">✕</button>`
+                                          appointment.status === "Завершено" || appointment.status === "Отменено"
+                                            ? `<button data-id="${appointment.id}" class="btn-action-delete btn btn-danger text-xs p-1 flex-grow" title="Удалить навсегда">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-auto" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                                               </button>`
                                             : ""
                                         }
                                     </div>
-                                </div>`;
+                                </div>
+                                <div class="resize-handle"></div>`;
               } else {
+                const slotDate = new Date(`${selectedDate}T${String(hour).padStart(2, "0")}:00:00`);
                 cell.style.gridRow = `span 1`;
                 cell.style.gridColumn = `${empIndex + 2}`;
-                cell.className =
-                  "employee-cell p-2 rounded-lg flex items-center justify-center bg-gray-900/50 border-2 border-dashed border-gray-700 hover:bg-gray-700 transition";
-                cell.innerHTML = `<button data-time="${String(hour).padStart(
-                  2,
-                  "0"
-                )}:00" data-employee="${employee}" class="btn-action-book text-gray-500 hover:text-white text-2xl">+</button>`;
+
+                if (slotDate < now) {
+                  cell.className =
+                    "employee-cell p-2 rounded-lg flex items-center justify-center bg-gray-900/20 border-2 border-dashed border-gray-800 cursor-not-allowed";
+                  cell.innerHTML = `<span class="text-gray-700 text-lg">-</span>`;
+                } else {
+                  cell.className =
+                    "employee-cell p-2 rounded-lg flex items-center justify-center bg-gray-900/50 border-2 border-dashed border-gray-700 hover:bg-gray-700 transition cursor-pointer btn-action-book-cell";
+                  cell.dataset.time = `${String(hour).padStart(2, "0")}:00`;
+                  cell.dataset.employee = employee;
+                  cell.innerHTML = `<span class="text-gray-500 text-2xl pointer-events-none">+</span>`;
+                }
               }
               dailyScheduleGrid.appendChild(cell);
             });
           }
         }
 
+        function renderListView() {
+          const appointmentsForDay = allAppointments
+            .filter((app) => app.date === selectedDate)
+            .sort((a, b) => a.time.localeCompare(b.time));
+
+          let content = '<div class="space-y-3">';
+          if (appointmentsForDay.length === 0) {
+            content += '<p class="text-center text-gray-400 py-8">На эту дату записей нет.</p>';
+          } else {
+            appointmentsForDay.forEach((app) => {
+              const statusClasses = {
+                Запланировано: "border-blue-500",
+                "В работе": "border-yellow-500",
+                Завершено: "border-green-500",
+                Отменено: "border-red-500",
+              };
+              const borderColor = statusClasses[app.status] || "border-gray-500";
+              content += `
+                            <div class="bg-gray-700 p-3 rounded-lg border-l-4 ${borderColor}">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="font-bold text-white">${app.time} - ${app.employee}</p>
+                                        <p>${app.customerName} - ${app.carModel}</p>
+                                        <p class="text-sm text-gray-300">${app.customerPhone}</p>
+                                    </div>
+                                    <span class="text-sm font-semibold px-2 py-1 bg-gray-600 rounded-full">${
+                                      app.status
+                                    }</span>
+                                </div>
+                                ${
+                                  app.comment
+                                    ? `<p class="text-sm italic text-gray-400 mt-2">Комментарий: ${app.comment}</p>`
+                                    : ""
+                                }
+                            </div>
+                        `;
+            });
+          }
+          content += "</div>";
+          scheduleViewContainer.innerHTML = content;
+        }
+
+        function renderChartView() {
+          const appointmentsForDay = allAppointments.filter((app) => app.date === selectedDate);
+          const employees = getEmployees();
+          const totalHours = WORK_DAY_END_HOUR - WORK_DAY_START_HOUR;
+
+          let content = '<div class="space-y-4">';
+          employees.forEach((employee) => {
+            content += `
+                        <div>
+                            <p class="font-bold mb-1">${employee}</p>
+                            <div class="w-full bg-gray-700 rounded h-8 relative">`;
+
+            const employeeAppointments = appointmentsForDay.filter((app) => app.employee === employee);
+            employeeAppointments.forEach((app) => {
+              const startHour = parseInt(app.time.split(":")[0]);
+              const leftPercent = ((startHour - WORK_DAY_START_HOUR) / totalHours) * 100;
+              const widthPercent = (app.duration / totalHours) * 100;
+              const statusClasses = {
+                Запланировано: "bg-blue-600",
+                "В работе": "bg-yellow-600",
+                Завершено: "bg-green-600",
+                Отменено: "bg-red-600",
+              };
+              const bgColor = statusClasses[app.status] || "bg-gray-500";
+
+              content += `
+                            <div class="${bgColor} absolute h-full rounded text-white text-xs flex items-center justify-center overflow-hidden" 
+                                 style="left: ${leftPercent}%; width: ${widthPercent}%;"
+                                 title="${app.time}, ${app.customerName}, ${app.carModel}">
+                                 <span class="truncate px-1">${app.customerName}</span>
+                            </div>
+                        `;
+            });
+
+            content += `</div></div>`;
+          });
+          content += "</div>";
+          scheduleViewContainer.innerHTML = content;
+        }
+
         // ================== Функции для работы с данными ==================
 
         function addAppointment(newAppointment) {
           allAppointments.push(newAppointment);
-          renderDailySchedule();
+          renderActiveView();
         }
 
         function updateAppointmentStatus(id, newStatus) {
           const appointment = allAppointments.find((app) => app.id === id);
           if (appointment) {
             appointment.status = newStatus;
-            renderDailySchedule();
+            renderActiveView();
           }
         }
 
         function deleteAppointment(id) {
           allAppointments = allAppointments.filter((app) => app.id !== id);
-          renderDailySchedule();
+          renderActiveView();
         }
 
         // ================== Модальное окно ==================
@@ -445,6 +663,15 @@
           formError.classList.add("hidden");
 
           const selectedTime = appointmentTimeInput.value;
+          const selectedDateValue = appointmentDateInput.value;
+          const selectedDateTime = new Date(`${selectedDateValue}T${selectedTime}`);
+
+          if (selectedDateTime < new Date()) {
+            formError.textContent = `Ошибка: Нельзя создать запись на прошедшее время.`;
+            formError.classList.remove("hidden");
+            return;
+          }
+
           const selectedHour = parseInt(selectedTime.split(":")[0]);
           const duration = parseInt(appointmentDurationInput.value) || 1;
           const brand = carBrandSelect.value;
@@ -467,11 +694,12 @@
             customerPhone: document.getElementById("customerPhone").value,
             carModel: `${brand} ${model}`,
             serviceType: document.getElementById("serviceType").value,
-            date: appointmentDateInput.value,
+            date: selectedDateValue,
             time: selectedTime,
             duration: duration,
             employee: employeeSelect.value,
             status: "Запланировано",
+            comment: commentInput.value,
           };
 
           addAppointment(newAppointment);
@@ -479,28 +707,41 @@
           bookingForm.reset();
           appointmentDateInput.value = new Date().toISOString().split("T")[0];
           populateTimeSelect();
+          updateAvailableTimes();
           populateCarBrands();
           updateCarModels();
         });
 
-        dailyScheduleGrid.addEventListener("click", (e) => {
-          const target = e.target.closest("button");
-          if (!target) return;
-          const id = target.dataset.id;
+        scheduleViewContainer.addEventListener("click", (e) => {
+          const buttonTarget = e.target.closest("button");
+          if (buttonTarget) {
+            const id = buttonTarget.dataset.id;
+            if (buttonTarget.classList.contains("btn-action-cancel")) {
+              showConfirmationModal("Отменить запись?", "Статус будет изменен на 'Отменено'.", "btn-danger", () =>
+                updateAppointmentStatus(id, "Отменено")
+              );
+            } else if (buttonTarget.classList.contains("btn-action-start")) {
+              updateAppointmentStatus(id, "В работе");
+            } else if (buttonTarget.classList.contains("btn-action-complete")) {
+              updateAppointmentStatus(id, "Завершено");
+            } else if (buttonTarget.classList.contains("btn-action-delete")) {
+              showConfirmationModal("Удалить запись?", "Это действие нельзя будет отменить.", "btn-danger", () =>
+                deleteAppointment(id)
+              );
+            }
+          }
 
-          if (target.classList.contains("btn-action-cancel")) {
-            showConfirmationModal("Отменить запись?", "Вы уверены?", "btn-danger", () =>
-              updateAppointmentStatus(id, "Отменено")
-            );
-          } else if (target.classList.contains("btn-action-start")) {
-            updateAppointmentStatus(id, "В работе");
-          } else if (target.classList.contains("btn-action-complete")) {
-            updateAppointmentStatus(id, "Завершено");
-          } else if (target.classList.contains("btn-action-book")) {
+          const bookCell = e.target.closest(".btn-action-book-cell");
+          if (bookCell) {
+            const currentlySelected = scheduleViewContainer.querySelector(".slot-selected");
+            if (currentlySelected) {
+              currentlySelected.classList.remove("slot-selected");
+            }
+            bookCell.classList.add("slot-selected");
+
             appointmentDateInput.value = selectedDate;
-            appointmentTimeInput.value = target.dataset.time;
-            employeeSelect.value = target.dataset.employee;
-            document.getElementById("booking-form-container").scrollIntoView({ behavior: "smooth" });
+            appointmentTimeInput.value = bookCell.dataset.time;
+            employeeSelect.value = bookCell.dataset.employee;
             document.getElementById("customerName").focus();
           }
         });
@@ -511,18 +752,251 @@
           hideModal();
         });
 
+        // ================== Drag and Drop Logic ==================
+        let draggedAppointmentId = null;
+
+        scheduleViewContainer.addEventListener("dragstart", (e) => {
+          if (currentView !== "grid") return;
+          const targetCell = e.target.closest('.employee-cell[draggable="true"]');
+          if (targetCell && targetCell.dataset.appointmentId) {
+            draggedAppointmentId = targetCell.dataset.appointmentId;
+            e.dataTransfer.effectAllowed = "move";
+            e.dataTransfer.setData("text/plain", draggedAppointmentId);
+            setTimeout(() => {
+              targetCell.classList.add("dragging");
+            }, 0);
+          }
+        });
+
+        scheduleViewContainer.addEventListener("dragend", (e) => {
+          if (currentView !== "grid") return;
+          const targetCell = e.target.closest('.employee-cell[draggable="true"]');
+          if (targetCell) {
+            targetCell.classList.remove("dragging");
+          }
+          draggedAppointmentId = null;
+        });
+
+        scheduleViewContainer.addEventListener("dragover", (e) => {
+          if (currentView !== "grid") return;
+          e.preventDefault();
+          const targetCell = e.target.closest(".employee-cell");
+          if (targetCell && targetCell.classList.contains("btn-action-book-cell")) {
+            targetCell.classList.add("drag-over");
+          }
+        });
+
+        scheduleViewContainer.addEventListener("dragleave", (e) => {
+          if (currentView !== "grid") return;
+          const targetCell = e.target.closest(".employee-cell");
+          if (targetCell) {
+            targetCell.classList.remove("drag-over");
+          }
+        });
+
+        scheduleViewContainer.addEventListener("drop", (e) => {
+          if (currentView !== "grid") return;
+          e.preventDefault();
+          const targetCell = e.target.closest(".employee-cell");
+          if (!targetCell || !draggedAppointmentId) return;
+
+          targetCell.classList.remove("drag-over");
+
+          const appointmentToMove = allAppointments.find((app) => app.id === draggedAppointmentId);
+          if (!appointmentToMove) return;
+
+          if (!targetCell.classList.contains("btn-action-book-cell")) return;
+
+          const newTime = targetCell.dataset.time;
+          const newEmployee = targetCell.dataset.employee;
+          const newHour = parseInt(newTime.split(":")[0]);
+          const duration = parseInt(appointmentToMove.duration);
+
+          // --- Проверка наложения ---
+          let isCollision = false;
+          for (let i = 0; i < duration; i++) {
+            const checkHour = newHour + i;
+            if (checkHour >= WORK_DAY_END_HOUR) {
+              isCollision = true;
+              break;
+            }
+            const conflictingAppointment = allAppointments.find(
+              (app) =>
+                app.id !== appointmentToMove.id &&
+                app.date === selectedDate &&
+                app.employee === newEmployee &&
+                parseInt(app.time.split(":")[0]) < checkHour + 1 &&
+                parseInt(app.time.split(":")[0]) + parseInt(app.duration) > checkHour
+            );
+            if (conflictingAppointment) {
+              isCollision = true;
+              break;
+            }
+          }
+
+          if (isCollision) {
+            formError.textContent = "Невозможно переместить: время занято или выходит за рамки рабочего дня.";
+            formError.classList.remove("hidden");
+            setTimeout(() => formError.classList.add("hidden"), 4000);
+            return;
+          }
+
+          // Обновляем данные
+          appointmentToMove.time = newTime;
+          appointmentToMove.employee = newEmployee;
+
+          renderActiveView();
+          draggedAppointmentId = null;
+        });
+
+        // ================== Resize Logic ==================
+        let isResizing = false;
+        let resizingState = {};
+
+        function handleResizeMouseDown(e) {
+          if (currentView !== "grid" || !e.target.classList.contains("resize-handle")) return;
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          isResizing = true;
+          const cell = e.target.closest(".employee-cell");
+          const appointmentId = cell.dataset.appointmentId;
+          const appointment = allAppointments.find((app) => app.id === appointmentId);
+
+          resizingState = {
+            id: appointmentId,
+            cell: cell,
+            initialY: e.clientY,
+            initialDuration: parseInt(appointment.duration),
+          };
+
+          document.addEventListener("mousemove", handleResizeMouseMove);
+          document.addEventListener("mouseup", handleResizeMouseUp);
+        }
+
+        function handleResizeMouseMove(e) {
+          if (!isResizing) return;
+
+          const deltaY = e.clientY - resizingState.initialY;
+          const slotHeight = resizingState.cell.offsetHeight / resizingState.initialDuration;
+          const durationChange = Math.round(deltaY / slotHeight);
+          let newDuration = resizingState.initialDuration + durationChange;
+
+          if (newDuration < 1) newDuration = 1;
+
+          const appointment = allAppointments.find((app) => app.id === resizingState.id);
+          const startHour = parseInt(appointment.time.split(":")[0]);
+
+          if (startHour + newDuration > WORK_DAY_END_HOUR) {
+            newDuration = WORK_DAY_END_HOUR - startHour;
+          }
+
+          // Проверка наложения при ресайзе
+          let isCollision = false;
+          for (let i = 1; i < newDuration; i++) {
+            const checkHour = startHour + i;
+            const conflictingAppointment = allAppointments.find(
+              (app) =>
+                app.id !== resizingState.id &&
+                app.date === selectedDate &&
+                app.employee === appointment.employee &&
+                parseInt(app.time.split(":")[0]) === checkHour
+            );
+            if (conflictingAppointment) {
+              isCollision = true;
+              break;
+            }
+          }
+
+          if (!isCollision) {
+            resizingState.cell.style.gridRow = `span ${newDuration}`;
+          }
+        }
+
+        function handleResizeMouseUp(e) {
+          if (!isResizing) return;
+
+          const finalHeight = resizingState.cell.offsetHeight;
+          const slotHeight = finalHeight / parseInt(resizingState.cell.style.gridRow.split(" ")[1]);
+          const deltaY = e.clientY - resizingState.initialY;
+          const durationChange = Math.round(deltaY / slotHeight);
+          let newDuration = resizingState.initialDuration + durationChange;
+
+          if (newDuration < 1) newDuration = 1;
+
+          const appointment = allAppointments.find((app) => app.id === resizingState.id);
+          const startHour = parseInt(appointment.time.split(":")[0]);
+
+          if (startHour + newDuration > WORK_DAY_END_HOUR) {
+            newDuration = WORK_DAY_END_HOUR - startHour;
+          }
+
+          appointment.duration = newDuration;
+
+          isResizing = false;
+          resizingState = {};
+          document.removeEventListener("mousemove", handleResizeMouseMove);
+          document.removeEventListener("mouseup", handleResizeMouseUp);
+
+          renderActiveView();
+        }
+
+        scheduleViewContainer.addEventListener("mousedown", handleResizeMouseDown);
+
         // ================== Инициализация приложения ==================
+        function dateToYyyyMmDd(date) {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        }
+
+        function updateSelectedDate(newDateString) {
+          selectedDate = newDateString;
+          scheduleDateInput.value = selectedDate;
+          appointmentDateInput.value = selectedDate;
+          updateAvailableTimes();
+          renderActiveView();
+        }
+
         function initializeApp() {
           appointmentDateInput.value = selectedDate;
           scheduleDateInput.value = selectedDate;
+
+          appointmentDateInput.addEventListener("change", updateAvailableTimes);
           scheduleDateInput.addEventListener("change", (e) => {
-            selectedDate = e.target.value;
-            renderDailySchedule();
+            updateSelectedDate(e.target.value);
           });
+
+          prevDayBtn.addEventListener("click", () => {
+            const currentDate = new Date(selectedDate);
+            currentDate.setDate(currentDate.getDate() - 1);
+            updateSelectedDate(dateToYyyyMmDd(currentDate));
+          });
+
+          nextDayBtn.addEventListener("click", () => {
+            const currentDate = new Date(selectedDate);
+            currentDate.setDate(currentDate.getDate() + 1);
+            updateSelectedDate(dateToYyyyMmDd(currentDate));
+          });
+
           populateTimeSelect();
+          updateAvailableTimes();
           populateCarBrands();
           carBrandSelect.addEventListener("change", updateCarModels);
-          renderDailySchedule(); // Первый рендер пустой сетки
+
+          viewSwitcher.addEventListener("click", (e) => {
+            const target = e.target.closest(".view-btn");
+            if (target) {
+              currentView = target.dataset.view;
+              document.querySelector(".view-btn.active").classList.remove("active");
+              target.classList.add("active");
+              renderActiveView();
+            }
+          });
+
+          renderActiveView();
         }
 
         initializeApp();
