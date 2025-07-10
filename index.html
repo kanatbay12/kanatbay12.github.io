@@ -267,6 +267,8 @@
         //    Убедитесь, что кавычки "" вокруг ваших ключей остались на месте.
         //
         // =====================================================================================
+        // Import the functions you need from the SDKs you need
+
         const firebaseConfig = {
           apiKey: "AIzaSyBGAuZan6tfRXlzyJ3vxAEd9NA3m43xPos",
           authDomain: "registration-a70d6.firebaseapp.com",
@@ -276,6 +278,10 @@
           appId: "1:662670826790:web:5b85a49c6ee618140ef5e7",
           measurementId: "G-QV8HBNH7XQ",
         };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
 
         // Проверка на наличие демонстрационных ключей
         if (firebaseConfig.apiKey.startsWith("!!!_")) {
