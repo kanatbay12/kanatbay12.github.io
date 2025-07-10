@@ -122,31 +122,6 @@
     </style>
   </head>
   <body>
-    <!-- Оверлей для ошибки конфигурации -->
-    <div id="config-overlay" class="hidden">
-      <div class="bg-red-800 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto text-left">
-        <h1 class="text-3xl font-bold mb-4">Ошибка: Приложение не настроено!</h1>
-        <p class="mb-4 text-lg">Чтобы приложение заработало, вам нужно подключить его к вашей базе данных Firebase.</p>
-        <p class="mb-2 font-semibold">Пожалуйста, выполните следующие шаги:</p>
-        <ol class="list-decimal list-inside space-y-2 mb-6">
-          <li>Откройте этот файл `index.html` в текстовом редакторе.</li>
-          <li>
-            Найдите в коде секцию с заголовком KANA
-            <code class="bg-black/50 px-2 py-1 rounded-md">ВАЖНО: ШАГ 1 - НАСТРОЙКА FIREBASE</code>.
-          </li>
-          <li>
-            Замените значения-заполнители (<code class="bg-black/50 px-2 py-1 rounded-md"
-              >!!!_ВСТАВЬТЕ_ВАШ_КЛЮЧ_СЮДА_!!!</code
-            >) на ваши реальные ключи из проекта Firebase.
-          </li>
-          <li>Сохраните файл и загрузите его на GitHub Pages снова.</li>
-        </ol>
-        <p class="text-sm text-red-200">
-          Без этого шага приложение работать не будет, так как не знает, куда сохранять данные.
-        </p>
-      </div>
-    </div>
-
     <div class="container mx-auto p-4 md:p-8">
       <header class="text-center mb-8">
         <h1 class="text-3xl md:text-4xl font-bold text-white">Система записи на сервисное обслуживание</h1>
