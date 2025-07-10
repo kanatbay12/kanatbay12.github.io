@@ -80,7 +80,7 @@
 
       .schedule-grid {
         display: grid;
-        grid-template-columns: 6rem repeat(4, 1fr);
+        /* grid-template-columns будет задаваться через JS */
         gap: 4px;
       }
       .grid-header {
@@ -178,10 +178,11 @@
           <div>
             <label for="employee" class="block text-sm font-medium text-gray-300 mb-1">Сотрудник</label>
             <select id="employee" class="w-full form-input p-2">
-              <option>Алексей Петров</option>
-              <option>Иван Сидоров</option>
-              <option>Сергей Иванов</option>
-              <option>Мария Кузнецова</option>
+              <option>Нурасыл</option>
+              <option>Куаныш</option>
+              <option>Айдос</option>
+              <option>Азамат</option>
+              <option>Нурсултан</option>
             </select>
           </div>
           <div class="lg:col-span-3">
@@ -249,7 +250,10 @@
         const carBrandSelect = document.getElementById("carBrand");
         const carModelSelect = document.getElementById("carModel");
         const formError = document.getElementById("form-error");
-        const employees = Array.from(employeeSelect.options).map((opt) => opt.value);
+        // Получаем сотрудников динамически
+        function getEmployees() {
+          return Array.from(employeeSelect.options).map((opt) => opt.value);
+        }
 
         // ================== Функции рендеринга и UI ==================
 
@@ -293,6 +297,10 @@
 
         function renderDailySchedule() {
           dailyScheduleGrid.innerHTML = "";
+          const employees = getEmployees();
+          // Динамически задаём количество колонок: 1 (время) + сотрудников
+          dailyScheduleGrid.style.gridTemplateColumns = `6rem repeat(${employees.length}, 1fr)`;
+
           const appointmentsForDay = allAppointments.filter((app) => app.date === selectedDate);
 
           const header = document.createElement("div");
@@ -344,33 +352,33 @@
                 cell.style.gridColumn = `${empIndex + 2}`;
 
                 cell.innerHTML = `
-                                <div class="text-xs overflow-hidden flex-grow">
-                                    <div class="font-bold text-white truncate">${appointment.customerName}</div>
-                                    <div class="text-gray-200 truncate">${appointment.carModel}</div>
-                                    <div class="text-gray-300 truncate">${appointment.serviceType}</div>
+                            <div class="text-xs overflow-hidden flex-grow">
+                                <div class="font-bold text-white truncate">${appointment.customerName}</div>
+                                <div class="text-gray-200 truncate">${appointment.carModel}</div>
+                                <div class="text-gray-300 truncate">${appointment.serviceType}</div>
+                            </div>
+                            <div class="mt-1">
+                                <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-black/30 block w-full text-center mb-1">${
+                                  appointment.status
+                                }</span>
+                                <div class="flex gap-1 justify-center">
+                                    ${
+                                      appointment.status === "Запланировано"
+                                        ? `<button data-id="${appointment.id}" class="btn-action-start btn btn-warning text-xs p-1 flex-grow" title="В работу">▶</button>`
+                                        : ""
+                                    }
+                                    ${
+                                      appointment.status === "В работе"
+                                        ? `<button data-id="${appointment.id}" class="btn-action-complete btn btn-success text-xs p-1 flex-grow" title="Завершить">✓</button>`
+                                        : ""
+                                    }
+                                    ${
+                                      appointment.status !== "Завершено" && appointment.status !== "Отменено"
+                                        ? `<button data-id="${appointment.id}" class="btn-action-cancel btn btn-danger text-xs p-1 flex-grow" title="Отменить">✕</button>`
+                                        : ""
+                                    }
                                 </div>
-                                <div class="mt-1">
-                                    <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-black/30 block w-full text-center mb-1">${
-                                      appointment.status
-                                    }</span>
-                                    <div class="flex gap-1 justify-center">
-                                        ${
-                                          appointment.status === "Запланировано"
-                                            ? `<button data-id="${appointment.id}" class="btn-action-start btn btn-warning text-xs p-1 flex-grow" title="В работу">▶</button>`
-                                            : ""
-                                        }
-                                        ${
-                                          appointment.status === "В работе"
-                                            ? `<button data-id="${appointment.id}" class="btn-action-complete btn btn-success text-xs p-1 flex-grow" title="Завершить">✓</button>`
-                                            : ""
-                                        }
-                                        ${
-                                          appointment.status !== "Завершено" && appointment.status !== "Отменено"
-                                            ? `<button data-id="${appointment.id}" class="btn-action-cancel btn btn-danger text-xs p-1 flex-grow" title="Отменить">✕</button>`
-                                            : ""
-                                        }
-                                    </div>
-                                </div>`;
+                            </div>`;
               } else {
                 cell.style.gridRow = `span 1`;
                 cell.style.gridColumn = `${empIndex + 2}`;
