@@ -5,43 +5,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Автономная система записи на сервис</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="css/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/flowbite@1.4.0/dist/flowbite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   </head>
   <body class="flex flex-col">
     <!-- Верхняя статичная часть -->
     <div class="flex-shrink-0">
       <div class="container mx-auto px-4 md:px-8 pt-4">
         <header class="text-center mb-4">
-          <h1 class="text-2xl md:text-3xl font-bold text-white">Автономная система записи</h1>
+          <h1 class="text-2xl md:text-3xl font-bold text-white">
+            Автономная система записи
+          </h1>
         </header>
 
-        <div id="booking-form-container" class="bg-gray-800 p-4 rounded-lg shadow-lg mb-4">
-          <form id="booking-form" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 items-end">
+        <div
+          id="booking-form-container"
+          class="bg-gray-800 p-4 rounded-lg shadow-lg mb-4"
+        >
+          <form
+            id="booking-form"
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 items-end"
+          >
             <div>
-              <label for="customerName" class="block text-xs font-medium text-gray-300 mb-1">Имя клиента</label>
-              <input type="text" id="customerName" class="w-full form-input" required />
+              <label
+                for="customerName"
+                class="block text-xs font-medium text-gray-300 mb-1"
+                >Имя клиента</label
+              >
+              <input
+                type="text"
+                id="customerName"
+                class="w-full form-input"
+                required
+              />
+            </div>
+            <div class="relative">
+              <label
+                for="customerPhone"
+                class="block text-xs font-medium text-gray-300 mb-1"
+                >Телефон</label
+              >
+              <input
+                type="tel"
+                id="customerPhone"
+                class="w-full form-input"
+                required
+                pattern="^\+7\d{10}$"
+                placeholder="+7XXXXXXXXXX"
+                title="Введите номер в формате +7XXXXXXXXXX"
+              />
+              <button
+                type="button"
+                id="show-history-btn"
+                class="absolute right-2 top-7 text-xs text-blue-400 underline"
+                title="Показать историю записей"
+              >
+                История
+              </button>
             </div>
             <div>
-              <label for="customerPhone" class="block text-xs font-medium text-gray-300 mb-1">Телефон</label>
-              <input type="tel" id="customerPhone" class="w-full form-input" required />
-            </div>
-            <div>
-              <label for="carBrand" class="block text-xs font-medium text-gray-300 mb-1">Марка</label>
+              <label
+                for="carBrand"
+                class="block text-xs font-medium text-gray-300 mb-1"
+                >Марка</label
+              >
               <select id="carBrand" class="w-full form-input" required></select>
             </div>
             <div>
-              <label for="carModel" class="block text-xs font-medium text-gray-300 mb-1">Модель</label>
+              <label
+                for="carModel"
+                class="block text-xs font-medium text-gray-300 mb-1"
+                >Модель</label
+              >
               <select id="carModel" class="w-full form-input" required disabled>
                 <option value="">Сначала выберите марку</option>
               </select>
             </div>
             <div>
-              <label for="serviceType" class="block text-xs font-medium text-gray-300 mb-1">Тип услуги</label>
+              <label
+                for="serviceType"
+                class="block text-xs font-medium text-gray-300 mb-1"
+                >Тип услуги</label
+              >
               <select id="serviceType" class="w-full form-input">
                 <option>Техническое обслуживание (ТО)</option>
                 <option>Диагностика</option>
@@ -52,15 +103,34 @@
               </select>
             </div>
             <div>
-              <label for="appointmentDate" class="block text-xs font-medium text-gray-300 mb-1">Дата</label>
-              <input type="date" id="appointmentDate" class="w-full form-input" required />
+              <label
+                for="appointmentDate"
+                class="block text-xs font-medium text-gray-300 mb-1"
+                >Дата</label
+              >
+              <input
+                type="date"
+                id="appointmentDate"
+                class="w-full form-input"
+                required
+              />
             </div>
             <div>
-              <label for="appointmentTime" class="block text-xs font-medium text-gray-300 mb-1">Время</label>
-              <select id="appointmentTime" class="w-full form-input" required></select>
+              <label
+                for="appointmentTime"
+                class="block text-xs font-medium text-gray-300 mb-1"
+                >Время</label
+              >
+              <select
+                id="appointmentTime"
+                class="w-full form-input"
+                required
+              ></select>
             </div>
             <div>
-              <label for="appointmentDuration" class="block text-xs font-medium text-gray-300 mb-1"
+              <label
+                for="appointmentDuration"
+                class="block text-xs font-medium text-gray-300 mb-1"
                 >Длительность (ч)</label
               >
               <input
@@ -74,7 +144,11 @@
               />
             </div>
             <div>
-              <label for="employee" class="block text-xs font-medium text-gray-300 mb-1">Сотрудник</label>
+              <label
+                for="employee"
+                class="block text-xs font-medium text-gray-300 mb-1"
+                >Сотрудник</label
+              >
               <select id="employee" class="w-full form-input">
                 <option>Нурасыл</option>
                 <option>Куаныш</option>
@@ -84,12 +158,26 @@
               </select>
             </div>
             <div class="lg:col-span-2">
-              <label for="comment" class="block text-xs font-medium text-gray-300 mb-1">Доп. комментарии</label>
-              <input type="text" id="comment" class="w-full form-input" placeholder="Особые отметки..." />
+              <label
+                for="comment"
+                class="block text-xs font-medium text-gray-300 mb-1"
+                >Доп. комментарии</label
+              >
+              <input
+                type="text"
+                id="comment"
+                class="w-full form-input"
+                placeholder="Особые отметки..."
+              />
             </div>
             <div>
-              <label class="block text-xs font-medium text-transparent mb-1 hidden sm:block">Действие</label>
-              <button type="submit" class="btn btn-primary w-full">Записать</button>
+              <label
+                class="block text-xs font-medium text-transparent mb-1 hidden sm:block"
+                >Действие</label
+              >
+              <button type="submit" class="btn btn-primary w-full">
+                Записать
+              </button>
             </div>
           </form>
           <p id="form-error" class="text-red-400 text-sm mt-2 hidden"></p>
@@ -100,18 +188,56 @@
     <!-- Нижняя прокручиваемая часть -->
     <div class="flex-grow overflow-y-auto">
       <div class="container mx-auto px-4 md:px-8 pb-4 md:pb-8">
-        <div id="schedule-container" class="bg-gray-800 p-4 rounded-lg shadow-lg">
-          <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+        <div
+          id="schedule-container"
+          class="bg-gray-800 p-4 rounded-lg shadow-lg"
+        >
+          <div
+            class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4"
+          >
             <h2 class="text-xl font-semibold text-white">План на день</h2>
             <div class="flex items-center gap-4">
-              <div id="view-switcher" class="flex items-center gap-2 bg-gray-700 p-1 rounded-lg">
-                <button data-view="grid" class="view-btn btn btn-secondary text-xs px-3 py-1 active">Сетка</button>
-                <button data-view="list" class="view-btn btn btn-secondary text-xs px-3 py-1">Список</button>
-                <button data-view="chart" class="view-btn btn btn-secondary text-xs px-3 py-1">Загрузка</button>
+              <div
+                id="view-switcher"
+                class="flex items-center gap-2 bg-gray-700 p-1 rounded-lg"
+              >
+                <button
+                  data-view="grid"
+                  class="view-btn btn btn-secondary text-xs px-3 py-1 active"
+                >
+                  Сетка
+                </button>
+                <button
+                  data-view="list"
+                  class="view-btn btn btn-secondary text-xs px-3 py-1"
+                >
+                  Список
+                </button>
+                <button
+                  data-view="chart"
+                  class="view-btn btn btn-secondary text-xs px-3 py-1"
+                >
+                  Загрузка
+                </button>
               </div>
+              <button
+                id="export-btn"
+                class="btn btn-secondary text-xs px-3 py-1"
+                title="Экспорт расписания"
+              >
+                Экспорт
+              </button>
               <div class="flex items-center">
-                <button id="prev-day-btn" class="btn btn-secondary p-2 rounded-r-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <button
+                  id="prev-day-btn"
+                  class="btn btn-secondary p-2 rounded-r-none"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
                     <path
                       fill-rule="evenodd"
                       d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
@@ -119,9 +245,21 @@
                     />
                   </svg>
                 </button>
-                <input type="date" id="scheduleDate" class="form-input p-2 rounded-none text-center" />
-                <button id="next-day-btn" class="btn btn-secondary p-2 rounded-l-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <input
+                  type="date"
+                  id="scheduleDate"
+                  class="form-input p-2 rounded-none text-center"
+                />
+                <button
+                  id="next-day-btn"
+                  class="btn btn-secondary p-2 rounded-l-none"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
                     <path
                       fill-rule="evenodd"
                       d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
@@ -141,13 +279,41 @@
 
     <div id="confirmation-modal" class="modal-backdrop hidden">
       <div class="bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-sm mx-4">
-        <h3 class="text-lg font-bold text-white mb-4" id="modal-title">Подтвердите действие</h3>
+        <h3 class="text-lg font-bold text-white mb-4" id="modal-title">
+          Подтвердите действие
+        </h3>
         <p class="text-gray-300 mb-6" id="modal-body">Вы уверены?</p>
         <div class="flex justify-end space-x-4">
-          <button id="modal-cancel-btn" class="btn btn-secondary">Отмена</button>
+          <button id="modal-cancel-btn" class="btn btn-secondary">
+            Отмена
+          </button>
           <button id="modal-confirm-btn" class="btn">Подтвердить</button>
         </div>
       </div>
+    </div>
+
+    <!-- Модальное окно истории записей -->
+    <div id="history-modal" class="modal-backdrop hidden">
+      <div class="bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md mx-4">
+        <h3 class="text-lg font-bold text-white mb-4">История записей</h3>
+        <div
+          id="history-list"
+          class="text-gray-300 text-sm max-h-64 overflow-y-auto"
+        ></div>
+        <div class="flex justify-end mt-4">
+          <button id="history-close-btn" class="btn btn-secondary">
+            Закрыть
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Всплывающее уведомление -->
+    <div
+      id="toast-success"
+      class="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg hidden z-50"
+    >
+      Запись успешно добавлена!
     </div>
 
     <script src="scripts/script.js"></script>
