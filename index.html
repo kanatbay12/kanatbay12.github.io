@@ -7,7 +7,637 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* * =============================================
+         * ОСНОВНЫЕ ПЕРЕМЕННЫЕ И СТИЛИ (THEME)
+         * =============================================
+        */
+        :root {
+            --bg-dark: #12141D;
+            --bg-light: #1E222E;
+            --text-primary: #EAF0F0;
+            --text-secondary: #a9b3c4;
+            --accent-primary: #00A9FF; /* Яркий синий */
+            --border-color: #33394b;
+            --shadow-color: rgba(0, 169, 255, 0.1);
+            --font-header: 'Exo 2', sans-serif;
+            --font-body: 'Roboto', sans-serif;
+        }
+
+        /* --- Базовая настройка --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-body);
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: var(--font-header);
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+        }
+
+        /* * =============================================
+         * ШАПКА САЙТА (HEADER)
+         * =============================================
+        */
+        .main-header {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 2rem;
+            padding: 1rem 5%;
+            background-color: rgba(18, 20, 29, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: var(--font-header);
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .logo span {
+            color: var(--accent-primary);
+        }
+
+        /* --- Поисковая строка --- */
+        .search-bar {
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .search-bar input {
+            width: 100%;
+            height: 44px;
+            padding: 0 50px 0 20px;
+            border-radius: 22px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--shadow-color);
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-dark);
+            transition: background-color 0.3s;
+        }
+
+        .search-bar button:hover {
+            background-color: #33bbff;
+        }
+
+        /* --- Правая часть шапки --- */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .profile-link {
+            color: var(--text-secondary);
+            transition: color 0.3s;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        .profile-link:hover {
+            color: var(--accent-primary);
+        }
+
+        /* --- Меню "Бургер" --- */
+        .menu-toggle-btn {
+            display: flex;
+            flex-direction: column;
+            width: 28px;
+            height: 22px;
+            cursor: pointer;
+            justify-content: space-between;
+            background: none;
+            border: none;
+            padding: 0;
+            position: relative;
+            z-index: 1200;
+        }
+
+        .menu-toggle-btn span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: var(--text-primary);
+            border-radius: 3px;
+            transition: transform 0.4s, opacity 0.3s;
+        }
+
+        .side-nav {
+            position: fixed;
+            top: 0;
+            right: -320px; /* Скрыто за экраном */
+            width: 300px;
+            height: 100%;
+            background-color: var(--bg-light);
+            padding: 6rem 2rem 2rem;
+            transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            z-index: 1100;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.3);
+        }
+
+        /* --- Стиль для открытого меню (добавляется через JS) --- */
+        .side-nav.is-open {
+            right: 0;
+        }
+
+        .menu-toggle-btn.is-active span {
+            background-color: var(--accent-primary);
+        }
+
+        .menu-toggle-btn.is-active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .menu-toggle-btn.is-active span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-toggle-btn.is-active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .side-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .side-nav a {
+            display: block;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 500;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: color 0.3s;
+        }
+        .side-nav a:hover {
+            color: var(--accent-primary);
+        }
+
+        /* * =============================================
+         * ГЛАВНЫЙ ЭКРАН (HERO SECTION)
+         * =============================================
+        */
+        .hero {
+            text-align: center;
+            padding: 6rem 1rem;
+            background: linear-gradient(180deg, var(--bg-dark) 70%, rgba(18,20,29,0.9)), url('https://placehold.co/1920x1080/12141d/12141d?text=') no-repeat center center/cover;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-family: var(--font-header);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin: 0 0 1rem 0;
+            line-height: 1.2;
+            background: linear-gradient(45deg, var(--accent-primary), var(--text-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem auto;
+        }
+
+        /* * =============================================
+         * РАЗДЕЛ ЛОГОТИПОВ БРЕНДОВ
+         * =============================================
+        */
+        .brands-section {
+            padding: 4rem 5%;
+            background-color: var(--bg-dark);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brands-section .section-title {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-weight: 500;
+        }
+
+        .brands-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem 4rem;
+        }
+
+        .brand-logo {
+            display: block;
+        }
+
+        .brand-logo svg {
+            height: 55px;
+            width: auto;
+            max-width: 140px;
+            fill: var(--text-secondary);
+            transition: fill 0.3s ease, transform 0.3s ease;
+        }
+
+        .brand-logo:hover svg {
+            fill: var(--accent-primary);
+            transform: scale(1.1);
+        }
+
+        /* * =============================================
+         * СЕКЦИЯ С КАРТОЧКАМИ (FEATURES)
+         * =============================================
+        */
+        .features-section {
+            padding: 6rem 5% 4rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 15px 30px var(--shadow-color);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1.5rem;
+            color: var(--accent-primary);
+        }
+
+        .feature-card h3 {
+            font-family: var(--font-header);
+            font-size: 1.5rem;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background-color: var(--accent-primary);
+            color: var(--bg-dark);
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.3s, color 0.3s;
+            border: 2px solid var(--accent-primary);
+        }
+
+        .btn:hover {
+            background-color: transparent;
+            color: var(--accent-primary);
+            transform: scale(1.05);
+        }
+
+        /* * =============================================
+         * СЕКЦИЯ ОТЗЫВОВ (TESTIMONIALS)
+         * =============================================
+        */
+        .testimonials-section {
+            padding: 6rem 5% 4rem;
+            background-color: var(--bg-dark);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background-color: var(--bg-light);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .testimonial-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-primary);
+            margin-bottom: 1.5rem;
+            object-fit: cover;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .testimonial-source {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* * =============================================
+         * СЕКЦИЯ ТАРИФОВ (PRICING)
+         * =============================================
+        */
+        .pricing-section {
+            padding: 6rem 5% 4rem;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .pricing-card {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .pricing-card.popular {
+            border-color: var(--accent-primary);
+            transform: scale(1.05);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-primary);
+            color: var(--bg-dark);
+            padding: 0.3rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .pricing-header h3 {
+            font-family: var(--font-header);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            margin-bottom: 2rem;
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: normal;
+            color: var(--text-secondary);
+        }
+
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            margin-bottom: 1rem;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .pricing-features li::before {
+            content: '✔';
+            color: var(--accent-primary);
+            position: absolute;
+            left: 0;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent-primary);
+        }
+        .btn-outline:hover {
+            background: var(--accent-primary);
+            color: var(--bg-dark);
+        }
+
+        /* * =============================================
+         * СЕКЦИЯ CTA
+         * =============================================
+        */
+        .cta-section {
+            padding: 6rem 5%;
+            background: linear-gradient(45deg, rgba(0, 169, 255, 0.1), rgba(18, 20, 29, 0.9)), var(--bg-light);
+            text-align: center;
+        }
+
+        .cta-content h2 {
+            font-family: var(--font-header);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-content p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .btn-cta {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            transform: scale(1);
+            transition: transform 0.3s;
+        }
+
+        .btn-cta:hover {
+            transform: scale(1.1) !important;
+        }
+
+        /* * =============================================
+         * ПОДВАЛ (FOOTER)
+         * =============================================
+        */
+        .main-footer {
+            padding: 4rem 5% 2rem;
+            background-color: var(--bg-light);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column .logo {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .footer-tagline {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-column h4 {
+            font-family: var(--font-header);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-column ul li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            padding: 0.4rem 0;
+            transition: color 0.3s;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--accent-primary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .social-links svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* --- Адаптивность для мобильных устройств --- */
+        @media (max-width: 900px) {
+            .main-header {
+                grid-template-columns: auto auto;
+                justify-content: space-between;
+            }
+            .search-bar {
+                grid-row: 2;
+                grid-column: 1 / 3;
+                max-width: none;
+                padding-top: 0.5rem;
+            }
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+        }
+         @media (max-width: 480px) {
+            .hero h1, .section-title, .cta-content h2 { font-size: 2rem; }
+            .hero p, .cta-content p { font-size: 1rem; }
+        }
+    </style>
 </head>
 <body>
 
@@ -25,19 +655,18 @@
         </div>
 
         <div class="header-right">
-            <button class="icon-btn profile-link" aria-label="Профиль пользователя">
-                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
-                    <path d="M4 20c0-2.2 3.6-4 8-4s8 1.8 8 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <a href="#" class="profile-link" aria-label="Профиль пользователя">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
                 </svg>
-            </button>
-            <button id="menu-toggle-btn" class="icon-btn" aria-label="Открыть меню">
-                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <line x1="4" y1="8" x2="20" y2="8" stroke="currentColor" stroke-linecap="round"/>
-                    <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-linecap="round"/>
-                    <line x1="4" y1="16" x2="20" y2="16" stroke="currentColor" stroke-linecap="round"/>
-                </svg>
-            </button>
+            </a>
+            <div class="hamburger-menu">
+                <button id="menu-toggle-btn" class="menu-toggle-btn" aria-label="Открыть меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
     </header>
     
@@ -47,6 +676,8 @@
             <li><a href="#">Схемы авто</a></li>
             <li><a href="#">Обучение</a></li>
             <li><a href="#">База знаний</a></li>
+            <li><a href="#">Тарифы</a></li>
+            <li><a href="#">Контакты</a></li>
         </ul>
     </nav>
 
@@ -54,14 +685,13 @@
         <!-- Главный экран -->
         <section class="hero">
             <h1>Платформа для профессионалов автодиагностики</h1>
-            <p>Все необходимые инструменты в одном месте: от электросхем до базы знаний по неисправностям.</p>
+            <p>Все необходимые инструменты в одном месте: от интерактивных электросхем до базы знаний по неисправностям.</p>
         </section>
 
         <!-- РАЗДЕЛ: Логотипы брендов -->
         <section class="brands-section">
-            <h2 class="section-title">Поддерживаемые марки автомобилей</h2>
+            <h2 class="section-title">Поддерживаем все популярные марки автомобилей</h2>
             <div class="brands-grid">
-                <!-- НОВЫЕ, БОЛЕЕ КАЧЕСТВЕННЫЕ SVG ЛОГОТИПЫ -->
                 <a href="#" class="brand-logo" title="Audi"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 19.33c-3.28 0-6.24-1.28-8.4-3.44a11.8 11.8 0 0 1 0-16.8C5.76 1.28 8.72 0 12 0c3.28 0 6.24 1.28 8.4 3.44a11.8 11.8 0 0 1 0 16.8c-2.16 2.16-5.12 3.09-8.4 3.09zm0-1.84c2.73 0 5.2-1.06 7.04-2.9a9.92 9.92 0 0 0 0-14.08C17.2 1.06 14.73 0 12 0c-2.73 0-5.2 1.06-7.04 2.9a9.92 9.92 0 0 0 0 14.08c1.84 1.84 4.31 2.9 7.04 2.9zm-6.6-4.7c-1.8-1.8-2.78-4.2-2.78-6.8s.98-5 2.78-6.8c1.8-1.8 4.2-2.78 6.8-2.78s5 .98 6.8 2.78c1.8 1.8 2.78 4.2 2.78 6.8s-.98 5-2.78 6.8c-1.8 1.8-4.2 2.78-6.8 2.78s-5-.98-6.8-2.78zm.18-11.8C3.78 6.2 2.8 8.6 2.8 11.2s.98 5 2.78 6.8c1.8 1.8 4.2 2.78 6.8 2.78s5-.98 6.8-2.78c1.8-1.8 2.78-4.2 2.78-6.8s-.98-5-2.78-6.8c-1.8-1.8-4.2-2.78-6.8-2.78s-4.82.98-6.62 2.78z"/></svg></a>
                 <a href="#" class="brand-logo" title="Mercedes-Benz"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.16c5.424 0 9.84 4.416 9.84 9.84s-4.416 9.84-9.84 9.84S2.16 17.424 2.16 12 6.576 2.16 12 2.16zM12 4.32l-5.784 11.376h11.568L12 4.32zm0 1.344L16.224 15H7.776L12 5.664zM12 11.4l-3.24 6.36h6.48L12 11.4z"/></svg></a>
                 <a href="#" class="brand-logo" title="BMW"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.16c5.424 0 9.84 4.416 9.84 9.84s-4.416 9.84-9.84 9.84S2.16 17.424 2.16 12 6.576 2.16 12 2.16zM12 3.24a8.76 8.76 0 0 1 8.76 8.76H12V3.24zm0 17.52a8.76 8.76 0 0 1-8.76-8.76H12v8.76z"/></svg></a>
@@ -75,40 +705,196 @@
 
         <!-- Разделы сайта в виде карточек -->
         <section class="features-section">
-            <h2 class="section-title">Наши инструменты</h2>
+            <h2 class="section-title">Все, что нужно для работы</h2>
             <div class="features-grid">
                 
                 <div class="feature-card">
                     <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    <h3>Схемы авто</h3>
-                    <p>Подробные интерактивные электросхемы, распиновки блоков и схемы расположения компонентов.</p>
+                    <h3>Интерактивные схемы</h3>
+                    <p>Цветные электросхемы с возможностью отслеживания цепей и перехода к расположению компонентов.</p>
                     <a href="#" class="btn">Перейти к схемам</a>
                 </div>
 
                 <div class="feature-card">
                      <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <h3>Учебный центр</h3>
-                    <p>Видеоуроки, подробные руководства и статьи от ведущих экспертов в области автодиагностики.</p>
+                    <h3>Видеоуроки от экспертов</h3>
+                    <p>Наша библиотека постоянно пополняется курсами по работе со сложным оборудованием и поиску неисправностей.</p>
                     <a href="#" class="btn">Начать обучение</a>
                 </div>
 
                 <div class="feature-card">
                     <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-                    <h3>База знаний</h3>
-                    <p>Технические характеристики, бюллетени (TSB) и база данных известных неисправностей по моделям.</p>
+                    <h3>База знаний (TSB)</h3>
+                    <p>Официальные технические бюллетени от производителей и база данных с описанием типовых неисправностей.</p>
                     <a href="#" class="btn">Искать в базе</a>
                 </div>
 
             </div>
         </section>
+
+        <!-- НОВЫЙ РАЗДЕЛ: Отзывы -->
+        <section class="testimonials-section">
+            <h2 class="section-title">Нам доверяют профессионалы</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <img src="https://placehold.co/100x100/EAF0F0/12141D?text=А" alt="Фотография клиента" class="testimonial-avatar">
+                    <p class="testimonial-text">"С AutoDiag Hub я экономлю до 5 часов в неделю. Вся информация под рукой, не нужно больше рыться на десятках форумов. Особенно ценю интерактивные схемы!"</p>
+                    <div class="testimonial-author">Александр Петров</div>
+                    <div class="testimonial-source">СТО "Авто-Мастер", Алматы</div>
+                </div>
+                <div class="testimonial-card">
+                    <img src="https://placehold.co/100x100/EAF0F0/12141D?text=И" alt="Фотография клиента" class="testimonial-avatar">
+                    <p class="testimonial-text">"База по типовым неисправностям — это просто золото. Несколько раз помогала быстро поставить диагноз в самых запутанных случаях. Рекомендую всем коллегам."</p>
+                    <div class="testimonial-author">Иван Сидоров</div>
+                    <div class="testimonial-source">Частный диагност, Астана</div>
+                </div>
+                <div class="testimonial-card">
+                    <img src="https://placehold.co/100x100/EAF0F0/12141D?text=С" alt="Фотография клиента" class="testimonial-avatar">
+                    <p class="testimonial-text">"Наконец-то появился достойный отечественный продукт. Техподдержка на высоте, постоянно добавляют новые марки и функции. Спасибо за вашу работу!"</p>
+                    <div class="testimonial-author">Сергей Васильев</div>
+                    <div class="testimonial-source">"Гараж 55", Шымкент</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- НОВЫЙ РАЗДЕЛ: Тарифы -->
+        <section class="pricing-section">
+            <h2 class="section-title">Выберите свой тариф</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Базовый</h3>
+                        <p class="pricing-price">0 ₸<span>/месяц</span></p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Доступ к 1 марке авто</li>
+                        <li>Просмотр схем (ограниченно)</li>
+                        <li>Базовые статьи</li>
+                        <li>-</li>
+                        <li>-</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline">Начать бесплатно</a>
+                </div>
+                <div class="pricing-card popular">
+                    <div class="popular-badge">Популярный</div>
+                    <div class="pricing-header">
+                        <h3>Профессионал</h3>
+                        <p class="pricing-price">15 000 ₸<span>/месяц</span></p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Все марки автомобилей</li>
+                        <li>Полный доступ к электросхемам</li>
+                        <li>Вся база знаний и TSB</li>
+                        <li>Видеоуроки от экспертов</li>
+                        <li>Техническая поддержка</li>
+                    </ul>
+                    <a href="#" class="btn">Выбрать тариф</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Команда</h3>
+                        <p class="pricing-price">50 000 ₸<span>/месяц</span></p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Все возможности тарифа "Про"</li>
+                        <li>До 5 пользователей</li>
+                        <li>Общий доступ к истории</li>
+                        <li>Приоритетная поддержка</li>
+                        <li>Скидки на оборудование</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline">Связаться с нами</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- НОВЫЙ РАЗДЕЛ: CTA -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2>Готовы ускорить свою работу?</h2>
+                <p>Присоединяйтесь к тысячам диагностов, которые уже используют AutoDiag Hub для решения самых сложных задач.</p>
+                <a href="#" class="btn btn-cta">Зарегистрироваться бесплатно</a>
+            </div>
+        </section>
+
     </main>
 
-    <!-- Подвал сайта -->
+    <!-- Расширенный подвал сайта -->
     <footer class="main-footer">
-        <p>&copy; 2025 AutoDiagHub. Все права защищены.</p>
+        <div class="footer-grid">
+            <div class="footer-column">
+                <a href="#" class="logo">AutoDiag<span>Hub</span></a>
+                <p class="footer-tagline">Ваш надежный партнер в мире автодиагностики.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Навигация</h4>
+                <ul>
+                    <li><a href="#">Схемы</a></li>
+                    <li><a href="#">Обучение</a></li>
+                    <li><a href="#">База знаний</a></li>
+                    <li><a href="#">Тарифы</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Компания</h4>
+                <ul>
+                    <li><a href="#">О нас</a></li>
+                    <li><a href="#">Контакты</a></li>
+                    <li><a href="#">Политика конфиденциальности</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Мы в соцсетях</h4>
+                <div class="social-links">
+                    <a href="#" aria-label="Telegram"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.018-.66-1.59-1.075-2.599-1.72-1.142-.733-.403-1.137.254-1.815.14-.155.273-.303.41-.446.692-.72 1.378-1.446 1.378-1.446s.244-.22.069-.42c-.175-.2-.438-.14-.613-.03-1.05.65-1.803 1.142-2.31 1.468-.529.34-1.013.513-1.486.33-1.013-.39-1.59-1.19-1.803-1.85-.03-.104-.05-.21-.04-.32.03-.314.26-.56.68-.733 4.26-1.737 6.32-2.673 8.62-3.648.24-.1.446-.14.536-.14z"/></svg></a>
+                    <a href="#" aria-label="YouTube"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 AutoDiagHub. Все права защищены.</p>
+        </div>
     </footer>
     
-<script src="scripts/script.js"></script>
+    <script>
+        // СКРИПТ ДЛЯ УПРАВЛЕНИЯ МЕНЮ
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggleBtn = document.getElementById('menu-toggle-btn');
+            const sideNav = document.getElementById('side-nav');
+            const mainContent = document.querySelector('main');
+
+            if (menuToggleBtn && sideNav) {
+                // Открытие/закрытие меню по клику на кнопку
+                menuToggleBtn.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Предотвращаем "всплытие" события
+                    toggleMenu();
+                });
+
+                // Закрытие меню по клику вне его области
+                document.addEventListener('click', (event) => {
+                    const isClickInsideNav = sideNav.contains(event.target);
+                    const isClickOnToggleBtn = menuToggleBtn.contains(event.target);
+
+                    if (!isClickInsideNav && !isClickOnToggleBtn && sideNav.classList.contains('is-open')) {
+                        toggleMenu();
+                    }
+                });
+
+                // Закрытие меню по клику на ссылку в нем
+                sideNav.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        if (sideNav.classList.contains('is-open')) {
+                            toggleMenu();
+                        }
+                    });
+                });
+
+                function toggleMenu() {
+                    menuToggleBtn.classList.toggle('is-active');
+                    sideNav.classList.toggle('is-open');
+                }
+            }
+        });
+    </script>
 
 </body>
 </html>
