@@ -20,6 +20,7 @@
             --accent-primary: #00A9FF; /* Яркий синий */
             --border-color: #33394b;
             --shadow-color: rgba(0, 169, 255, 0.1);
+            --error-color: #ff4d4d;
             --font-header: 'Exo 2', sans-serif;
             --font-body: 'Roboto', sans-serif;
         }
@@ -148,6 +149,15 @@
             color: var(--accent-primary);
         }
 
+        #user-info {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: none; /* Скрыто по умолчанию */
+        }
+        #logout-btn {
+            display: none; /* Скрыто по умолчанию */
+        }
+
         /* --- Меню "Бургер" --- */
         .menu-toggle-btn {
             display: flex;
@@ -185,7 +195,6 @@
             box-shadow: -5px 0 25px rgba(0,0,0,0.3);
         }
 
-        /* --- Стиль для открытого меню (добавляется через JS) --- */
         .side-nav.is-open {
             right: 0;
         }
@@ -224,419 +233,175 @@
             color: var(--accent-primary);
         }
 
-        /* * =============================================
-         * ГЛАВНЫЙ ЭКРАН (HERO SECTION)
-         * =============================================
-        */
-        .hero {
-            text-align: center;
-            padding: 6rem 1rem;
-            background: linear-gradient(180deg, var(--bg-dark) 70%, rgba(18,20,29,0.9)), url('https://placehold.co/1920x1080/12141d/12141d?text=') no-repeat center center/cover;
-            position: relative;
-        }
-
-        .hero h1 {
-            font-family: var(--font-header);
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            margin: 0 0 1rem 0;
-            line-height: 1.2;
-            background: linear-gradient(45deg, var(--accent-primary), var(--text-primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 2rem auto;
-        }
-
-        /* * =============================================
-         * РАЗДЕЛ ЛОГОТИПОВ БРЕНДОВ
-         * =============================================
-        */
-        .brands-section {
-            padding: 4rem 5%;
-            background-color: var(--bg-dark);
-            border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .brands-section .section-title {
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            font-weight: 500;
-        }
-
-        .brands-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 3rem 4rem;
-        }
-
-        .brand-logo {
-            display: block;
-        }
-
-        .brand-logo svg {
-            height: 55px;
-            width: auto;
-            max-width: 140px;
-            fill: var(--text-secondary);
-            transition: fill 0.3s ease, transform 0.3s ease;
-        }
-
-        .brand-logo:hover svg {
-            fill: var(--accent-primary);
-            transform: scale(1.1);
-        }
-
-        /* * =============================================
-         * СЕКЦИЯ С КАРТОЧКАМИ (FEATURES)
-         * =============================================
-        */
-        .features-section {
-            padding: 6rem 5% 4rem;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: var(--bg-light);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--accent-primary);
-            box-shadow: 0 15px 30px var(--shadow-color);
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 1.5rem;
-            color: var(--accent-primary);
-        }
-
-        .feature-card h3 {
-            font-family: var(--font-header);
-            font-size: 1.5rem;
-            margin: 0 0 0.5rem 0;
-        }
-
-        .feature-card p {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.8rem;
-            background-color: var(--accent-primary);
-            color: var(--bg-dark);
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 8px;
-            transition: background-color 0.3s, transform 0.3s, color 0.3s;
-            border: 2px solid var(--accent-primary);
-        }
-
-        .btn:hover {
-            background-color: transparent;
-            color: var(--accent-primary);
-            transform: scale(1.05);
-        }
-
-        /* * =============================================
-         * СЕКЦИЯ ОТЗЫВОВ (TESTIMONIALS)
-         * =============================================
-        */
-        .testimonials-section {
-            padding: 6rem 5% 4rem;
-            background-color: var(--bg-dark);
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .testimonial-card {
-            background-color: var(--bg-light);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .testimonial-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 3px solid var(--accent-primary);
-            margin-bottom: 1.5rem;
-            object-fit: cover;
-        }
-
-        .testimonial-text {
-            font-style: italic;
-            color: var(--text-primary);
-            margin-bottom: 1.5rem;
-            flex-grow: 1;
-        }
-
-        .testimonial-author {
-            font-weight: bold;
-            color: var(--text-primary);
-        }
-
-        .testimonial-source {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        /* * =============================================
-         * СЕКЦИЯ ТАРИФОВ (PRICING)
-         * =============================================
-        */
-        .pricing-section {
-            padding: 6rem 5% 4rem;
-        }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .pricing-card {
-            background-color: var(--bg-light);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2.5rem;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-        }
-
-        .pricing-card.popular {
-            border-color: var(--accent-primary);
-            transform: scale(1.05);
-        }
-
-        .popular-badge {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent-primary);
-            color: var(--bg-dark);
-            padding: 0.3rem 1rem;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        .pricing-header h3 {
-            font-family: var(--font-header);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .pricing-price {
-            font-size: 3rem;
-            font-weight: bold;
-            color: var(--accent-primary);
-            margin-bottom: 2rem;
-        }
-
-        .pricing-price span {
-            font-size: 1rem;
-            font-weight: normal;
-            color: var(--text-secondary);
-        }
-
-        .pricing-features {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 2rem 0;
-            text-align: left;
-        }
-
-        .pricing-features li {
-            margin-bottom: 1rem;
-            padding-left: 30px;
-            position: relative;
-        }
-
-        .pricing-features li::before {
-            content: '✔';
-            color: var(--accent-primary);
-            position: absolute;
+        /* --- Стили для модального окна авторизации --- */
+        .auth-modal {
+            position: fixed;
+            top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
         }
 
-        .btn-outline {
-            background: transparent;
-            color: var(--accent-primary);
-        }
-        .btn-outline:hover {
-            background: var(--accent-primary);
-            color: var(--bg-dark);
+        .auth-modal.is-visible {
+            opacity: 1;
+            visibility: visible;
         }
 
-        /* * =============================================
-         * СЕКЦИЯ CTA
-         * =============================================
-        */
-        .cta-section {
-            padding: 6rem 5%;
-            background: linear-gradient(45deg, rgba(0, 169, 255, 0.1), rgba(18, 20, 29, 0.9)), var(--bg-light);
-            text-align: center;
-        }
-
-        .cta-content h2 {
-            font-family: var(--font-header);
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .cta-content p {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 2rem auto;
-        }
-
-        .btn-cta {
-            padding: 1rem 2.5rem;
-            font-size: 1.1rem;
-            transform: scale(1);
-            transition: transform 0.3s;
-        }
-
-        .btn-cta:hover {
-            transform: scale(1.1) !important;
-        }
-
-        /* * =============================================
-         * ПОДВАЛ (FOOTER)
-         * =============================================
-        */
-        .main-footer {
-            padding: 4rem 5% 2rem;
+        .auth-modal-content {
             background-color: var(--bg-light);
-            border-top: 1px solid var(--border-color);
+            padding: 2.5rem;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            border: 1px solid var(--border-color);
         }
 
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-column .logo {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .footer-tagline {
+        .auth-modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
         }
-
-        .footer-column h4 {
-            font-family: var(--font-header);
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
+        .auth-modal-close:hover {
             color: var(--text-primary);
         }
 
-        .footer-column ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .footer-column ul li a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            display: block;
-            padding: 0.4rem 0;
-            transition: color 0.3s;
-        }
-
-        .footer-column ul li a:hover {
-            color: var(--accent-primary);
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .social-links a {
-            color: var(--text-secondary);
-            transition: color 0.3s;
-        }
-
-        .social-links a:hover {
-            color: var(--accent-primary);
-        }
-
-        .social-links svg {
-            width: 24px;
-            height: 24px;
-        }
-
-        .footer-bottom {
+        .auth-form h2 {
             text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            font-family: var(--font-header);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .auth-form .btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1.5rem;
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
+        .auth-switch-btn {
+            background: none;
+            border: none;
+            color: var(--accent-primary);
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-        /* --- Адаптивность для мобильных устройств --- */
-        @media (max-width: 900px) {
-            .main-header {
-                grid-template-columns: auto auto;
-                justify-content: space-between;
-            }
-            .search-bar {
-                grid-row: 2;
-                grid-column: 1 / 3;
-                max-width: none;
-                padding-top: 0.5rem;
-            }
-            .pricing-card.popular {
-                transform: scale(1);
-            }
+        #login-form, #register-form {
+            display: none;
         }
-         @media (max-width: 480px) {
-            .hero h1, .section-title, .cta-content h2 { font-size: 2rem; }
-            .hero p, .cta-content p { font-size: 1rem; }
+        #login-form.active, #register-form.active {
+            display: block;
         }
+        
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        /* * =============================================
+         * ОСТАЛЬНЫЕ СТИЛИ (без изменений)
+         * =============================================
+        */
+        .hero { text-align: center; padding: 6rem 1rem; background: linear-gradient(180deg, var(--bg-dark) 70%, rgba(18,20,29,0.9)), url('https://placehold.co/1920x1080/12141d/12141d?text=') no-repeat center center/cover; position: relative; }
+        .hero h1 { font-family: var(--font-header); font-size: clamp(2.5rem, 5vw, 4rem); margin: 0 0 1rem 0; line-height: 1.2; background: linear-gradient(45deg, var(--accent-primary), var(--text-primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.25rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto 2rem auto; }
+        .brands-section { padding: 4rem 5%; background-color: var(--bg-dark); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .brands-section .section-title { font-size: 1.5rem; color: var(--text-secondary); margin-bottom: 3rem; font-weight: 500; }
+        .brands-grid { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 3rem 4rem; }
+        .brand-logo { display: block; }
+        .brand-logo svg { height: 55px; width: auto; max-width: 140px; fill: var(--text-secondary); transition: fill 0.3s ease, transform 0.3s ease; }
+        .brand-logo:hover svg { fill: var(--accent-primary); transform: scale(1.1); }
+        .features-section { padding: 6rem 5% 4rem; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+        .feature-card { background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
+        .feature-card:hover { transform: translateY(-10px); border-color: var(--accent-primary); box-shadow: 0 15px 30px var(--shadow-color); }
+        .feature-icon { width: 60px; height: 60px; margin-bottom: 1.5rem; color: var(--accent-primary); }
+        .feature-card h3 { font-family: var(--font-header); font-size: 1.5rem; margin: 0 0 0.5rem 0; }
+        .feature-card p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+        .btn { display: inline-block; padding: 0.8rem 1.8rem; background-color: var(--accent-primary); color: var(--bg-dark); text-decoration: none; font-weight: bold; border-radius: 8px; transition: background-color 0.3s, transform 0.3s, color 0.3s; border: 2px solid var(--accent-primary); }
+        .btn:hover { background-color: transparent; color: var(--accent-primary); transform: scale(1.05); }
+        .testimonials-section { padding: 6rem 5% 4rem; background-color: var(--bg-dark); }
+        .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+        .testimonial-card { background-color: var(--bg-light); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .testimonial-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--accent-primary); margin-bottom: 1.5rem; object-fit: cover; }
+        .testimonial-text { font-style: italic; color: var(--text-primary); margin-bottom: 1.5rem; flex-grow: 1; }
+        .testimonial-author { font-weight: bold; color: var(--text-primary); }
+        .testimonial-source { font-size: 0.9rem; color: var(--text-secondary); }
+        .pricing-section { padding: 6rem 5% 4rem; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; align-items: center; }
+        .pricing-card { background-color: var(--bg-light); border: 1px solid var(--border-color); border-radius: 12px; padding: 2.5rem; text-align: center; transition: transform 0.3s, box-shadow 0.3s; position: relative; }
+        .pricing-card.popular { border-color: var(--accent-primary); transform: scale(1.05); }
+        .popular-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--accent-primary); color: var(--bg-dark); padding: 0.3rem 1rem; border-radius: 15px; font-size: 0.9rem; font-weight: bold; }
+        .pricing-header h3 { font-family: var(--font-header); font-size: 1.5rem; margin-bottom: 1rem; }
+        .pricing-price { font-size: 3rem; font-weight: bold; color: var(--accent-primary); margin-bottom: 2rem; }
+        .pricing-price span { font-size: 1rem; font-weight: normal; color: var(--text-secondary); }
+        .pricing-features { list-style: none; padding: 0; margin: 0 0 2rem 0; text-align: left; }
+        .pricing-features li { margin-bottom: 1rem; padding-left: 30px; position: relative; }
+        .pricing-features li::before { content: '✔'; color: var(--accent-primary); position: absolute; left: 0; }
+        .btn-outline { background: transparent; color: var(--accent-primary); }
+        .btn-outline:hover { background: var(--accent-primary); color: var(--bg-dark); }
+        .cta-section { padding: 6rem 5%; background: linear-gradient(45deg, rgba(0, 169, 255, 0.1), rgba(18, 20, 29, 0.9)), var(--bg-light); text-align: center; }
+        .cta-content h2 { font-family: var(--font-header); font-size: 2.5rem; margin-bottom: 1rem; }
+        .cta-content p { font-size: 1.2rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem auto; }
+        .btn-cta { padding: 1rem 2.5rem; font-size: 1.1rem; transform: scale(1); transition: transform 0.3s; }
+        .btn-cta:hover { transform: scale(1.1) !important; }
+        .main-footer { padding: 4rem 5% 2rem; background-color: var(--bg-light); border-top: 1px solid var(--border-color); }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
+        .footer-column .logo { font-size: 1.5rem; margin-bottom: 1rem; display: block; }
+        .footer-tagline { color: var(--text-secondary); font-size: 0.9rem; }
+        .footer-column h4 { font-family: var(--font-header); font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-primary); }
+        .footer-column ul { list-style: none; padding: 0; margin: 0; }
+        .footer-column ul li a { color: var(--text-secondary); text-decoration: none; display: block; padding: 0.4rem 0; transition: color 0.3s; }
+        .footer-column ul li a:hover { color: var(--accent-primary); }
+        .social-links { display: flex; gap: 1rem; }
+        .social-links a { color: var(--text-secondary); transition: color 0.3s; }
+        .social-links a:hover { color: var(--accent-primary); }
+        .social-links svg { width: 24px; height: 24px; }
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid var(--border-color); font-size: 0.9rem; color: var(--text-secondary); }
+        @media (max-width: 900px) { .main-header { grid-template-columns: auto auto; justify-content: space-between; } .search-bar { grid-row: 2; grid-column: 1 / 3; max-width: none; padding-top: 0.5rem; } .pricing-card.popular { transform: scale(1); } }
+        @media (max-width: 480px) { .hero h1, .section-title, .cta-content h2 { font-size: 2rem; } .hero p, .cta-content p { font-size: 1rem; } }
     </style>
 </head>
 <body>
@@ -648,17 +413,17 @@
         <div class="search-bar">
             <input type="text" placeholder="Поиск по схемам, статьям, TSB...">
             <button type="submit" aria-label="Искать">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
             </button>
         </div>
 
         <div class="header-right">
-            <a href="#" class="profile-link" aria-label="Профиль пользователя">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-                </svg>
+            <span id="user-info"></span>
+            <a href="#" id="profile-btn" class="profile-link" aria-label="Профиль пользователя">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/></svg>
+            </a>
+            <a href="#" id="logout-btn" class="profile-link" aria-label="Выйти">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6-11v1.5a5.5 5.5 0 0 1-5.5 5.5h-1.5" /></svg>
             </a>
             <div class="hamburger-menu">
                 <button id="menu-toggle-btn" class="menu-toggle-btn" aria-label="Открыть меню">
@@ -681,219 +446,235 @@
         </ul>
     </nav>
 
+    <!-- Модальное окно авторизации -->
+    <div id="auth-modal" class="auth-modal">
+        <div class="auth-modal-content">
+            <button id="auth-modal-close" class="auth-modal-close">&times;</button>
+            
+            <!-- Форма входа -->
+            <form id="login-form" class="auth-form active">
+                <h2>Вход в аккаунт</h2>
+                <p id="login-error" class="error-message"></p>
+                <div class="form-group">
+                    <input type="email" id="login-email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="login-password" placeholder="Пароль" required>
+                </div>
+                <button type="submit" class="btn">Войти</button>
+                <p class="auth-switch">Нет аккаунта? <button type="button" id="switch-to-register" class="auth-switch-btn">Зарегистрироваться</button></p>
+            </form>
+
+            <!-- Форма регистрации -->
+            <form id="register-form" class="auth-form">
+                <h2>Создание аккаунта</h2>
+                 <p id="register-error" class="error-message"></p>
+                <div class="form-group">
+                    <input type="email" id="register-email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="register-password" placeholder="Пароль (минимум 6 символов)" required>
+                </div>
+                <button type="submit" class="btn">Создать аккаунт</button>
+                <p class="auth-switch">Уже есть аккаунт? <button type="button" id="switch-to-login" class="auth-switch-btn">Войти</button></p>
+            </form>
+        </div>
+    </div>
+
     <main>
-        <!-- Главный экран -->
-        <section class="hero">
-            <h1>Платформа для профессионалов автодиагностики</h1>
-            <p>Все необходимые инструменты в одном месте: от интерактивных электросхем до базы знаний по неисправностям.</p>
-        </section>
-
-        <!-- РАЗДЕЛ: Логотипы брендов -->
-        <section class="brands-section">
-            <h2 class="section-title">Поддерживаем все популярные марки автомобилей</h2>
-            <div class="brands-grid">
-                <a href="#" class="brand-logo" title="Audi"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 19.33c-3.28 0-6.24-1.28-8.4-3.44a11.8 11.8 0 0 1 0-16.8C5.76 1.28 8.72 0 12 0c3.28 0 6.24 1.28 8.4 3.44a11.8 11.8 0 0 1 0 16.8c-2.16 2.16-5.12 3.09-8.4 3.09zm0-1.84c2.73 0 5.2-1.06 7.04-2.9a9.92 9.92 0 0 0 0-14.08C17.2 1.06 14.73 0 12 0c-2.73 0-5.2 1.06-7.04 2.9a9.92 9.92 0 0 0 0 14.08c1.84 1.84 4.31 2.9 7.04 2.9zm-6.6-4.7c-1.8-1.8-2.78-4.2-2.78-6.8s.98-5 2.78-6.8c1.8-1.8 4.2-2.78 6.8-2.78s5 .98 6.8 2.78c1.8 1.8 2.78 4.2 2.78 6.8s-.98 5-2.78 6.8c-1.8 1.8-4.2 2.78-6.8 2.78s-5-.98-6.8-2.78zm.18-11.8C3.78 6.2 2.8 8.6 2.8 11.2s.98 5 2.78 6.8c1.8 1.8 4.2 2.78 6.8 2.78s5-.98 6.8-2.78c1.8-1.8 2.78-4.2 2.78-6.8s-.98-5-2.78-6.8c-1.8-1.8-4.2-2.78-6.8-2.78s-4.82.98-6.62 2.78z"/></svg></a>
-                <a href="#" class="brand-logo" title="Mercedes-Benz"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.16c5.424 0 9.84 4.416 9.84 9.84s-4.416 9.84-9.84 9.84S2.16 17.424 2.16 12 6.576 2.16 12 2.16zM12 4.32l-5.784 11.376h11.568L12 4.32zm0 1.344L16.224 15H7.776L12 5.664zM12 11.4l-3.24 6.36h6.48L12 11.4z"/></svg></a>
-                <a href="#" class="brand-logo" title="BMW"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.16c5.424 0 9.84 4.416 9.84 9.84s-4.416 9.84-9.84 9.84S2.16 17.424 2.16 12 6.576 2.16 12 2.16zM12 3.24a8.76 8.76 0 0 1 8.76 8.76H12V3.24zm0 17.52a8.76 8.76 0 0 1-8.76-8.76H12v8.76z"/></svg></a>
-                <a href="#" class="brand-logo" title="Volkswagen"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.16c5.424 0 9.84 4.416 9.84 9.84s-4.416 9.84-9.84 9.84S2.16 17.424 2.16 12 6.576 2.16 12 2.16zM6.24 6.24l-2.16 7.44h2.88l1.44-5.04 1.44 5.04h2.88l3.6-7.44h-2.88l-2.16 5.04-2.16-5.04H6.24zm9.36 0l-3.6 7.44h2.88l2.16-5.04 2.16 5.04h2.88l-3.6-7.44h-2.88z"/></svg></a>
-                <a href="#" class="brand-logo" title="Toyota"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.16c5.424 0 9.84 4.416 9.84 9.84s-4.416 9.84-9.84 9.84S2.16 17.424 2.16 12 6.576 2.16 12 2.16zM12 6.24a5.76 5.76 0 1 1 0 11.52A5.76 5.76 0 0 1 12 6.24zm0 1.44a4.32 4.32 0 1 0 0 8.64 4.32 4.32 0 0 0 0-8.64zM12 9.36a2.64 2.64 0 1 1 0 5.28 2.64 2.64 0 0 1 0-5.28z"/></svg></a>
-                <a href="#" class="brand-logo" title="Ford"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.88 17.28h-2.64l-1.44-3.6h-4.8l-1.44 3.6H4.92l5.04-12h4.08l5.04 12zm-6.36-5.04l-1.8-4.56-1.8 4.56h3.6z"/></svg></a>
-                <a href="#" class="brand-logo" title="Honda"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.8 17.28h-2.16V12c0-1.584-1.296-2.88-2.88-2.88s-2.88 1.296-2.88 2.88v5.28H6.72V6.72h2.16v4.32c.864-1.08 2.232-1.8 3.84-1.8 2.64 0 4.8 2.16 4.8 4.8v3.24z"/></svg></a>
-                <a href="#" class="brand-logo" title="Kia"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zM7.2 6.72h2.16l3.6 6.48V6.72h2.16v10.56h-2.16L9.36 10.8v6.48H7.2V6.72zm9.6 0h2.16v10.56h-2.16V6.72z"/></svg></a>
-            </div>
-        </section>
-
-        <!-- Разделы сайта в виде карточек -->
-        <section class="features-section">
-            <h2 class="section-title">Все, что нужно для работы</h2>
-            <div class="features-grid">
-                
-                <div class="feature-card">
-                    <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    <h3>Интерактивные схемы</h3>
-                    <p>Цветные электросхемы с возможностью отслеживания цепей и перехода к расположению компонентов.</p>
-                    <a href="#" class="btn">Перейти к схемам</a>
-                </div>
-
-                <div class="feature-card">
-                     <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <h3>Видеоуроки от экспертов</h3>
-                    <p>Наша библиотека постоянно пополняется курсами по работе со сложным оборудованием и поиску неисправностей.</p>
-                    <a href="#" class="btn">Начать обучение</a>
-                </div>
-
-                <div class="feature-card">
-                    <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-                    <h3>База знаний (TSB)</h3>
-                    <p>Официальные технические бюллетени от производителей и база данных с описанием типовых неисправностей.</p>
-                    <a href="#" class="btn">Искать в базе</a>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- НОВЫЙ РАЗДЕЛ: Отзывы -->
-        <section class="testimonials-section">
-            <h2 class="section-title">Нам доверяют профессионалы</h2>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <img src="https://placehold.co/100x100/EAF0F0/12141D?text=А" alt="Фотография клиента" class="testimonial-avatar">
-                    <p class="testimonial-text">"С AutoDiag Hub я экономлю до 5 часов в неделю. Вся информация под рукой, не нужно больше рыться на десятках форумов. Особенно ценю интерактивные схемы!"</p>
-                    <div class="testimonial-author">Александр Петров</div>
-                    <div class="testimonial-source">СТО "Авто-Мастер", Алматы</div>
-                </div>
-                <div class="testimonial-card">
-                    <img src="https://placehold.co/100x100/EAF0F0/12141D?text=И" alt="Фотография клиента" class="testimonial-avatar">
-                    <p class="testimonial-text">"База по типовым неисправностям — это просто золото. Несколько раз помогала быстро поставить диагноз в самых запутанных случаях. Рекомендую всем коллегам."</p>
-                    <div class="testimonial-author">Иван Сидоров</div>
-                    <div class="testimonial-source">Частный диагност, Астана</div>
-                </div>
-                <div class="testimonial-card">
-                    <img src="https://placehold.co/100x100/EAF0F0/12141D?text=С" alt="Фотография клиента" class="testimonial-avatar">
-                    <p class="testimonial-text">"Наконец-то появился достойный отечественный продукт. Техподдержка на высоте, постоянно добавляют новые марки и функции. Спасибо за вашу работу!"</p>
-                    <div class="testimonial-author">Сергей Васильев</div>
-                    <div class="testimonial-source">"Гараж 55", Шымкент</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- НОВЫЙ РАЗДЕЛ: Тарифы -->
-        <section class="pricing-section">
-            <h2 class="section-title">Выберите свой тариф</h2>
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Базовый</h3>
-                        <p class="pricing-price">0 ₸<span>/месяц</span></p>
-                    </div>
-                    <ul class="pricing-features">
-                        <li>Доступ к 1 марке авто</li>
-                        <li>Просмотр схем (ограниченно)</li>
-                        <li>Базовые статьи</li>
-                        <li>-</li>
-                        <li>-</li>
-                    </ul>
-                    <a href="#" class="btn btn-outline">Начать бесплатно</a>
-                </div>
-                <div class="pricing-card popular">
-                    <div class="popular-badge">Популярный</div>
-                    <div class="pricing-header">
-                        <h3>Профессионал</h3>
-                        <p class="pricing-price">15 000 ₸<span>/месяц</span></p>
-                    </div>
-                    <ul class="pricing-features">
-                        <li>Все марки автомобилей</li>
-                        <li>Полный доступ к электросхемам</li>
-                        <li>Вся база знаний и TSB</li>
-                        <li>Видеоуроки от экспертов</li>
-                        <li>Техническая поддержка</li>
-                    </ul>
-                    <a href="#" class="btn">Выбрать тариф</a>
-                </div>
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Команда</h3>
-                        <p class="pricing-price">50 000 ₸<span>/месяц</span></p>
-                    </div>
-                    <ul class="pricing-features">
-                        <li>Все возможности тарифа "Про"</li>
-                        <li>До 5 пользователей</li>
-                        <li>Общий доступ к истории</li>
-                        <li>Приоритетная поддержка</li>
-                        <li>Скидки на оборудование</li>
-                    </ul>
-                    <a href="#" class="btn btn-outline">Связаться с нами</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- НОВЫЙ РАЗДЕЛ: CTA -->
-        <section class="cta-section">
-            <div class="cta-content">
-                <h2>Готовы ускорить свою работу?</h2>
-                <p>Присоединяйтесь к тысячам диагностов, которые уже используют AutoDiag Hub для решения самых сложных задач.</p>
-                <a href="#" class="btn btn-cta">Зарегистрироваться бесплатно</a>
-            </div>
-        </section>
-
+        <!-- (Остальной контент страницы без изменений) -->
+        <section class="hero"><h1>Платформа для профессионалов автодиагностики</h1><p>Все необходимые инструменты в одном месте: от интерактивных электросхем до базы знаний по неисправностям.</p></section>
+        <section class="brands-section"><h2 class="section-title">Поддерживаем все популярные марки автомобилей</h2><div class="brands-grid"><a href="#" class="brand-logo" title="Audi"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 19.33c-3.28 0-6.24-1.28-8.4-3.44a11.8 11.8 0 0 1 0-16.8C5.76 1.28 8.72 0 12 0c3.28 0 6.24 1.28 8.4 3.44a11.8 11.8 0 0 1 0 16.8c-2.16 2.16-5.12 3.09-8.4 3.09zm0-1.84c2.73 0 5.2-1.06 7.04-2.9a9.92 9.92 0 0 0 0-14.08C17.2 1.06 14.73 0 12 0c-2.73 0-5.2 1.06-7.04 2.9a9.92 9.92 0 0 0 0 14.08c1.84 1.84 4.31 2.9 7.04 2.9zm-6.6-4.7c-1.8-1.8-2.78-4.2-2.78-6.8s.98-5 2.78-6.8c1.8-1.8 4.2-2.78 6.8-2.78s5 .98 6.8 2.78c1.8 1.8 2.78 4.2 2.78 6.8s-.98 5-2.78 6.8c-1.8 1.8-4.2 2.78-6.8 2.78s-5-.98-6.8-2.78zm.18-11.8C3.78 6.2 2.8 8.6 2.8 11.2s.98 5 2.78 6.8c1.8 1.8 4.2 2.78 6.8 2.78s5-.98 6.8-2.78c1.8-1.8 2.78-4.2 2.78-6.8s-.98-5-2.78-6.8c-1.8-1.8-4.2-2.78-6.8-2.78s-4.82.98-6.62 2.78z"/></svg></a><a href="#" class="brand-logo" title="Mercedes-Benz"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.16c5.424 0 9.84 4.416 9.84 9.84s-4.416 9.84-9.84 9.84S2.16 17.424 2.16 12 6.576 2.16 12 2.16zM12 4.32l-5.784 11.376h11.568L12 4.32zm0 1.344L16.224 15H7.776L12 5.664zM12 11.4l-3.24 6.36h6.48L12 11.4z"/></svg></a><a href="#" class="brand-logo" title="BMW"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.16c5.424 0 9.84 4.416 9.84 9.84s-4.416 9.84-9.84 9.84S2.16 17.424 2.16 12 6.576 2.16 12 2.16zM12 3.24a8.76 8.76 0 0 1 8.76 8.76H12V3.24zm0 17.52a8.76 8.76 0 0 1-8.76-8.76H12v8.76z"/></svg></a><a href="#" class="brand-logo" title="Volkswagen"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.16c5.424 0 9.84 4.416 9.84 9.84s-4.416 9.84-9.84 9.84S2.16 17.424 2.16 12 6.576 2.16 12 2.16zM6.24 6.24l-2.16 7.44h2.88l1.44-5.04 1.44 5.04h2.88l3.6-7.44h-2.88l-2.16 5.04-2.16-5.04H6.24zm9.36 0l-3.6 7.44h2.88l2.16-5.04 2.16 5.04h2.88l-3.6-7.44h-2.88z"/></svg></a><a href="#" class="brand-logo" title="Toyota"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.16c5.424 0 9.84 4.416 9.84 9.84s-4.416 9.84-9.84 9.84S2.16 17.424 2.16 12 6.576 2.16 12 2.16zM12 6.24a5.76 5.76 0 1 1 0 11.52A5.76 5.76 0 0 1 12 6.24zm0 1.44a4.32 4.32 0 1 0 0 8.64 4.32 4.32 0 0 0 0-8.64zM12 9.36a2.64 2.64 0 1 1 0 5.28 2.64 2.64 0 0 1 0-5.28z"/></svg></a><a href="#" class="brand-logo" title="Ford"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.88 17.28h-2.64l-1.44-3.6h-4.8l-1.44 3.6H4.92l5.04-12h4.08l5.04 12zm-6.36-5.04l-1.8-4.56-1.8 4.56h3.6z"/></svg></a><a href="#" class="brand-logo" title="Honda"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.8 17.28h-2.16V12c0-1.584-1.296-2.88-2.88-2.88s-2.88 1.296-2.88 2.88v5.28H6.72V6.72h2.16v4.32c.864-1.08 2.232-1.8 3.84-1.8 2.64 0 4.8 2.16 4.8 4.8v3.24z"/></svg></a><a href="#" class="brand-logo" title="Kia"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zM7.2 6.72h2.16l3.6 6.48V6.72h2.16v10.56h-2.16L9.36 10.8v6.48H7.2V6.72zm9.6 0h2.16v10.56h-2.16V6.72z"/></svg></a></div></section>
+        <section class="features-section"><h2 class="section-title">Все, что нужно для работы</h2><div class="features-grid"><div class="feature-card"><svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg><h3>Интерактивные схемы</h3><p>Цветные электросхемы с возможностью отслеживания цепей и перехода к расположению компонентов.</p><a href="#" class="btn">Перейти к схемам</a></div><div class="feature-card"><svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><h3>Видеоуроки от экспертов</h3><p>Наша библиотека постоянно пополняется курсами по работе со сложным оборудованием и поиску неисправностей.</p><a href="#" class="btn">Начать обучение</a></div><div class="feature-card"><svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg><h3>База знаний (TSB)</h3><p>Официальные технические бюллетени от производителей и база данных с описанием типовых неисправностей.</p><a href="#" class="btn">Искать в базе</a></div></div></section>
+        <section class="testimonials-section"><h2 class="section-title">Нам доверяют профессионалы</h2><div class="testimonials-grid"><div class="testimonial-card"><img src="https://placehold.co/100x100/EAF0F0/12141D?text=А" alt="Фотография клиента" class="testimonial-avatar"><p class="testimonial-text">"С AutoDiag Hub я экономлю до 5 часов в неделю. Вся информация под рукой, не нужно больше рыться на десятках форумов. Особенно ценю интерактивные схемы!"</p><div class="testimonial-author">Александр Петров</div><div class="testimonial-source">СТО "Авто-Мастер", Алматы</div></div><div class="testimonial-card"><img src="https://placehold.co/100x100/EAF0F0/12141D?text=И" alt="Фотография клиента" class="testimonial-avatar"><p class="testimonial-text">"База по типовым неисправностям — это просто золото. Несколько раз помогала быстро поставить диагноз в самых запутанных случаях. Рекомендую всем коллегам."</p><div class="testimonial-author">Иван Сидоров</div><div class="testimonial-source">Частный диагност, Астана</div></div><div class="testimonial-card"><img src="https://placehold.co/100x100/EAF0F0/12141D?text=С" alt="Фотография клиента" class="testimonial-avatar"><p class="testimonial-text">"Наконец-то появился достойный отечественный продукт. Техподдержка на высоте, постоянно добавляют новые марки и функции. Спасибо за вашу работу!"</p><div class="testimonial-author">Сергей Васильев</div><div class="testimonial-source">"Гараж 55", Шымкент</div></div></div></section>
+        <section class="pricing-section"><h2 class="section-title">Выберите свой тариф</h2><div class="pricing-grid"><div class="pricing-card"><div class="pricing-header"><h3>Базовый</h3><p class="pricing-price">0 ₸<span>/месяц</span></p></div><ul class="pricing-features"><li>Доступ к 1 марке авто</li><li>Просмотр схем (ограниченно)</li><li>Базовые статьи</li><li>-</li><li>-</li></ul><a href="#" class="btn btn-outline">Начать бесплатно</a></div><div class="pricing-card popular"><div class="popular-badge">Популярный</div><div class="pricing-header"><h3>Профессионал</h3><p class="pricing-price">15 000 ₸<span>/месяц</span></p></div><ul class="pricing-features"><li>Все марки автомобилей</li><li>Полный доступ к электросхемам</li><li>Вся база знаний и TSB</li><li>Видеоуроки от экспертов</li><li>Техническая поддержка</li></ul><a href="#" class="btn">Выбрать тариф</a></div><div class="pricing-card"><div class="pricing-header"><h3>Команда</h3><p class="pricing-price">50 000 ₸<span>/месяц</span></p></div><ul class="pricing-features"><li>Все возможности тарифа "Про"</li><li>До 5 пользователей</li><li>Общий доступ к истории</li><li>Приоритетная поддержка</li><li>Скидки на оборудование</li></ul><a href="#" class="btn btn-outline">Связаться с нами</a></div></div></section>
+        <section class="cta-section"><div class="cta-content"><h2>Готовы ускорить свою работу?</h2><p>Присоединяйтесь к тысячам диагностов, которые уже используют AutoDiag Hub для решения самых сложных задач.</p><a href="#" class="btn btn-cta">Зарегистрироваться бесплатно</a></div></section>
     </main>
 
     <!-- Расширенный подвал сайта -->
-    <footer class="main-footer">
-        <div class="footer-grid">
-            <div class="footer-column">
-                <a href="#" class="logo">AutoDiag<span>Hub</span></a>
-                <p class="footer-tagline">Ваш надежный партнер в мире автодиагностики.</p>
-            </div>
-            <div class="footer-column">
-                <h4>Навигация</h4>
-                <ul>
-                    <li><a href="#">Схемы</a></li>
-                    <li><a href="#">Обучение</a></li>
-                    <li><a href="#">База знаний</a></li>
-                    <li><a href="#">Тарифы</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Компания</h4>
-                <ul>
-                    <li><a href="#">О нас</a></li>
-                    <li><a href="#">Контакты</a></li>
-                    <li><a href="#">Политика конфиденциальности</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Мы в соцсетях</h4>
-                <div class="social-links">
-                    <a href="#" aria-label="Telegram"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.018-.66-1.59-1.075-2.599-1.72-1.142-.733-.403-1.137.254-1.815.14-.155.273-.303.41-.446.692-.72 1.378-1.446 1.378-1.446s.244-.22.069-.42c-.175-.2-.438-.14-.613-.03-1.05.65-1.803 1.142-2.31 1.468-.529.34-1.013.513-1.486.33-1.013-.39-1.59-1.19-1.803-1.85-.03-.104-.05-.21-.04-.32.03-.314.26-.56.68-.733 4.26-1.737 6.32-2.673 8.62-3.648.24-.1.446-.14.536-.14z"/></svg></a>
-                    <a href="#" aria-label="YouTube"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 AutoDiagHub. Все права защищены.</p>
-        </div>
-    </footer>
+    <footer class="main-footer"><div class="footer-grid"><div class="footer-column"><a href="#" class="logo">AutoDiag<span>Hub</span></a><p class="footer-tagline">Ваш надежный партнер в мире автодиагностики.</p></div><div class="footer-column"><h4>Навигация</h4><ul><li><a href="#">Схемы</a></li><li><a href="#">Обучение</a></li><li><a href="#">База знаний</a></li><li><a href="#">Тарифы</a></li></ul></div><div class="footer-column"><h4>Компания</h4><ul><li><a href="#">О нас</a></li><li><a href="#">Контакты</a></li><li><a href="#">Политика конфиденциальности</a></li></ul></div><div class="footer-column"><h4>Мы в соцсетях</h4><div class="social-links"><a href="#" aria-label="Telegram"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.018-.66-1.59-1.075-2.599-1.72-1.142-.733-.403-1.137.254-1.815.14-.155.273-.303.41-.446.692-.72 1.378-1.446 1.378-1.446s.244-.22.069-.42c-.175-.2-.438-.14-.613-.03-1.05.65-1.803 1.142-2.31 1.468-.529.34-1.013.513-1.486.33-1.013-.39-1.59-1.19-1.803-1.85-.03-.104-.05-.21-.04-.32.03-.314.26-.56.68-.733 4.26-1.737 6.32-2.673 8.62-3.648.24-.1.446-.14.536-.14z"/></svg></a><a href="#" aria-label="YouTube"><svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a></div></div></div><div class="footer-bottom"><p>&copy; 2025 AutoDiagHub. Все права защищены.</p></div></footer>
     
-    <script>
-        // СКРИПТ ДЛЯ УПРАВЛЕНИЯ МЕНЮ
-        document.addEventListener('DOMContentLoaded', () => {
-            const menuToggleBtn = document.getElementById('menu-toggle-btn');
-            const sideNav = document.getElementById('side-nav');
-            const mainContent = document.querySelector('main');
+    <!-- SDK Firebase -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-            if (menuToggleBtn && sideNav) {
-                // Открытие/закрытие меню по клику на кнопку
-                menuToggleBtn.addEventListener('click', (event) => {
-                    event.stopPropagation(); // Предотвращаем "всплытие" события
+        // ===============================================================
+        // ВАШИ ДАННЫЕ FIREBASE
+        // Сюда нужно вставить ваш объект firebaseConfig из консоли Firebase
+        // ===============================================================
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // --- Элементы UI ---
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const sideNav = document.getElementById('side-nav');
+        
+        const authModal = document.getElementById('auth-modal');
+        const authModalCloseBtn = document.getElementById('auth-modal-close');
+        const profileBtn = document.getElementById('profile-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const userInfo = document.getElementById('user-info');
+        
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        
+        const switchToRegisterBtn = document.getElementById('switch-to-register');
+        const switchToLoginBtn = document.getElementById('switch-to-login');
+
+        const loginError = document.getElementById('login-error');
+        const registerError = document.getElementById('register-error');
+
+        // --- Логика меню (без изменений) ---
+        if (menuToggleBtn && sideNav) {
+            menuToggleBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                toggleMenu();
+            });
+            document.addEventListener('click', (event) => {
+                const isClickInsideNav = sideNav.contains(event.target);
+                const isClickOnToggleBtn = menuToggleBtn.contains(event.target);
+                if (!isClickInsideNav && !isClickOnToggleBtn && sideNav.classList.contains('is-open')) {
                     toggleMenu();
-                });
-
-                // Закрытие меню по клику вне его области
-                document.addEventListener('click', (event) => {
-                    const isClickInsideNav = sideNav.contains(event.target);
-                    const isClickOnToggleBtn = menuToggleBtn.contains(event.target);
-
-                    if (!isClickInsideNav && !isClickOnToggleBtn && sideNav.classList.contains('is-open')) {
+                }
+            });
+            sideNav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (sideNav.classList.contains('is-open')) {
                         toggleMenu();
                     }
                 });
+            });
+            function toggleMenu() {
+                menuToggleBtn.classList.toggle('is-active');
+                sideNav.classList.toggle('is-open');
+            }
+        }
 
-                // Закрытие меню по клику на ссылку в нем
-                sideNav.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', () => {
-                        if (sideNav.classList.contains('is-open')) {
-                            toggleMenu();
-                        }
-                    });
-                });
+        // --- Логика модального окна авторизации ---
+        const openAuthModal = () => {
+            authModal.classList.add('is-visible');
+            loginForm.classList.add('active');
+            registerForm.classList.remove('active');
+        };
+        const closeAuthModal = () => authModal.classList.remove('is-visible');
 
-                function toggleMenu() {
-                    menuToggleBtn.classList.toggle('is-active');
-                    sideNav.classList.toggle('is-open');
-                }
+        profileBtn.addEventListener('click', openAuthModal);
+        authModalCloseBtn.addEventListener('click', closeAuthModal);
+        authModal.addEventListener('click', (event) => {
+            if (event.target === authModal) {
+                closeAuthModal();
             }
         });
+        
+        switchToRegisterBtn.addEventListener('click', () => {
+            loginForm.classList.remove('active');
+            registerForm.classList.add('active');
+        });
+        
+        switchToLoginBtn.addEventListener('click', () => {
+            registerForm.classList.remove('active');
+            loginForm.classList.add('active');
+        });
+
+        // --- Логика Firebase ---
+
+        // Регистрация
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            registerError.style.display = 'none';
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    console.log('Пользователь зарегистрирован:', userCredential.user);
+                    closeAuthModal();
+                })
+                .catch((error) => {
+                    console.error('Ошибка регистрации:', error);
+                    registerError.textContent = getAuthErrorMessage(error.code);
+                    registerError.style.display = 'block';
+                });
+        });
+
+        // Вход
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            loginError.style.display = 'none';
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    console.log('Пользователь вошел:', userCredential.user);
+                    closeAuthModal();
+                })
+                .catch((error) => {
+                    console.error('Ошибка входа:', error);
+                    loginError.textContent = getAuthErrorMessage(error.code);
+                    loginError.style.display = 'block';
+                });
+        });
+
+        // Выход
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                console.log('Пользователь вышел');
+            }).catch((error) => {
+                console.error('Ошибка выхода:', error);
+            });
+        });
+
+        // Отслеживание состояния авторизации
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Пользователь вошел
+                profileBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                userInfo.textContent = user.email;
+                userInfo.style.display = 'block';
+            } else {
+                // Пользователь вышел
+                profileBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                userInfo.style.display = 'none';
+            }
+        });
+
+        // Функция для перевода кодов ошибок Firebase
+        function getAuthErrorMessage(errorCode) {
+            switch (errorCode) {
+                case 'auth/invalid-email':
+                    return 'Неверный формат email адреса.';
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                    return 'Неверный email или пароль.';
+                case 'auth/email-already-in-use':
+                    return 'Этот email уже зарегистрирован.';
+                case 'auth/weak-password':
+                    return 'Пароль слишком слабый (минимум 6 символов).';
+                default:
+                    return 'Произошла неизвестная ошибка. Попробуйте снова.';
+            }
+        }
     </script>
 
 </body>
