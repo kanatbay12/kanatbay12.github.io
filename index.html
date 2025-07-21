@@ -11,8 +11,6 @@
         /* * =============================================
          * ОСНОВНЫЕ ПЕРЕМЕННЫЕ И СТИЛИ (THEME)
          * =============================================
-         * Использование CSS-переменных позволяет легко 
-         * менять цветовую схему всего сайта в одном месте.
         */
         :root {
             --bg-dark: #12141D;
@@ -20,7 +18,6 @@
             --text-primary: #EAF0F0;
             --text-secondary: #a9b3c4;
             --accent-primary: #00A9FF; /* Яркий синий */
-            --accent-secondary: #FF8C00; /* Теплый оранжевый */
             --border-color: #33394b;
             --shadow-color: rgba(0, 169, 255, 0.1);
             --font-header: 'Exo 2', sans-serif;
@@ -40,20 +37,27 @@
             font-size: 16px;
             line-height: 1.6;
         }
+        
+        .section-title {
+            text-align: center;
+            font-family: var(--font-header);
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+        }
 
         /* * =============================================
-         * ШАПКА САЙТА (HEADER)
+         * НОВАЯ ШАПКА САЙТА (HEADER V2)
          * =============================================
-         * Используем Flexbox для идеального выравнивания 
-         * элементов по горизонтали.
         */
         .main-header {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
             align-items: center;
+            gap: 2rem;
             padding: 1rem 5%;
-            background-color: rgba(30, 34, 46, 0.8);
-            backdrop-filter: blur(10px); /* Эффект "матового стекла" */
+            background-color: rgba(18, 20, 29, 0.85);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
@@ -66,51 +70,144 @@
             font-weight: 800;
             color: var(--text-primary);
             text-decoration: none;
+            flex-shrink: 0;
         }
 
         .logo span {
             color: var(--accent-primary);
         }
-
-        .main-nav ul {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            display: flex;
-            gap: 2.5rem;
-        }
-
-        .main-nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 500;
+        
+        /* --- Поисковая строка --- */
+        .search-bar {
             position: relative;
-            padding: 5px 0;
-            transition: color 0.3s ease;
-        }
-
-        /* --- Эффект подчеркивания при наведении (чистый CSS) --- */
-        .main-nav a::after {
-            content: '';
-            position: absolute;
+            max-width: 600px;
             width: 100%;
-            height: 2px;
-            background: var(--accent-primary);
-            bottom: 0;
-            left: 0;
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            margin: 0 auto;
         }
 
-        .main-nav a:hover {
+        .search-bar input {
+            width: 100%;
+            height: 44px;
+            padding: 0 50px 0 20px;
+            border-radius: 22px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-light);
             color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
-        .main-nav a:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--shadow-color);
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-dark);
+            transition: background-color 0.3s;
+        }
+
+        .search-bar button:hover {
+            background-color: #33bbff;
+        }
+        
+        /* --- Правая часть шапки --- */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .profile-link {
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+        .profile-link:hover {
+            color: var(--accent-primary);
+        }
+        
+        /* --- Меню "Бургер" (только CSS) --- */
+        .menu-toggle-checkbox {
+            display: none;
+        }
+
+        .menu-toggle-label {
+            display: flex;
+            flex-direction: column;
+            width: 28px;
+            height: 22px;
+            cursor: pointer;
+            justify-content: space-between;
+        }
+
+        .menu-toggle-label span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: var(--text-primary);
+            border-radius: 3px;
+            transition: transform 0.4s, opacity 0.3s;
+        }
+
+        .side-nav {
+            position: fixed;
+            top: 0;
+            right: -300px; /* Скрыто за экраном */
+            width: 300px;
+            height: 100%;
+            background-color: var(--bg-light);
+            padding: 6rem 2rem 2rem;
+            transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            z-index: 1100;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.3);
+        }
+
+        .side-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .side-nav a {
+            display: block;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 500;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: color 0.3s;
+        }
+        .side-nav a:hover {
+            color: var(--accent-primary);
+        }
+
+        /* --- Логика открытия/закрытия меню --- */
+        .menu-toggle-checkbox:checked ~ .side-nav {
+            right: 0;
+        }
+        .menu-toggle-checkbox:checked ~ .menu-toggle-label span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        .menu-toggle-checkbox:checked ~ .menu-toggle-label span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-toggle-checkbox:checked ~ .menu-toggle-label span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
         }
 
         /* * =============================================
@@ -126,7 +223,7 @@
 
         .hero h1 {
             font-family: var(--font-header);
-            font-size: clamp(2.5rem, 5vw, 4rem); /* Адаптивный размер шрифта */
+            font-size: clamp(2.5rem, 5vw, 4rem);
             margin: 0 0 1rem 0;
             line-height: 1.2;
             background: linear-gradient(45deg, var(--accent-primary), var(--text-primary));
@@ -142,21 +239,54 @@
         }
 
         /* * =============================================
+         * РАЗДЕЛ ЛОГОТИПОВ БРЕНДОВ (V2 - SVG)
+         * =============================================
+        */
+        .brands-section {
+            padding: 4rem 5%;
+            background-color: var(--bg-dark);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brands-section .section-title {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            font-weight: 500;
+        }
+
+        .brands-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2.5rem 3.5rem;
+        }
+
+        .brand-logo {
+            display: block;
+        }
+
+        .brand-logo svg {
+            height: 40px;
+            width: auto;
+            max-width: 120px;
+            fill: var(--text-secondary);
+            transition: fill 0.3s ease, transform 0.3s ease;
+        }
+
+        .brand-logo:hover svg {
+            fill: var(--accent-primary);
+            transform: scale(1.1);
+        }
+
+        /* * =============================================
          * СЕКЦИЯ С КАРТОЧКАМИ (FEATURES)
          * =============================================
-         * CSS Grid - идеальный инструмент для создания
-         * адаптивных сеток без медиа-запросов.
         */
         .features-section {
-            padding: 4rem 5%;
-        }
-        
-        .section-title {
-            text-align: center;
-            font-family: var(--font-header);
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: var(--text-primary);
+            padding: 6rem 5% 4rem;
         }
 
         .features-grid {
@@ -172,11 +302,8 @@
             padding: 2rem;
             text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
         
-        /* --- Эффект при наведении на карточку --- */
         .feature-card:hover {
             transform: translateY(-10px);
             border-color: var(--accent-primary);
@@ -188,11 +315,6 @@
             height: 60px;
             margin-bottom: 1.5rem;
             color: var(--accent-primary);
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1);
         }
 
         .feature-card h3 {
@@ -214,7 +336,7 @@
             text-decoration: none;
             font-weight: bold;
             border-radius: 8px;
-            transition: background-color 0.3s, transform 0.3s;
+            transition: background-color 0.3s, transform 0.3s, color 0.3s;
             border: 2px solid var(--accent-primary);
         }
 
@@ -239,17 +361,22 @@
         }
         
         /* --- Адаптивность для мобильных устройств --- */
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .main-header {
-                flex-direction: column;
-                gap: 1rem;
+                grid-template-columns: auto auto;
+                justify-content: space-between;
             }
-            .main-nav ul {
-                gap: 1.5rem;
+            .search-bar {
+                grid-row: 2;
+                grid-column: 1 / 3;
+                max-width: none;
+                padding-top: 0.5rem;
             }
-            .hero {
-                padding: 4rem 1rem;
-            }
+        }
+         @media (max-width: 480px) {
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            .section-title { font-size: 2rem; }
         }
 
     </style>
@@ -259,13 +386,38 @@
     <!-- Шапка сайта -->
     <header class="main-header">
         <a href="#" class="logo">AutoDiag<span>Hub</span></a>
-        <nav class="main-nav">
-            <ul>
-                <li><a href="#">Схемы авто</a></li>
-                <li><a href="#">Обучение</a></li>
-                <li><a href="#">База знаний</a></li>
-            </ul>
-        </nav>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="Поиск по схемам, статьям, TSB...">
+            <button type="submit" aria-label="Искать">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="header-right">
+            <a href="#" class="profile-link" aria-label="Профиль пользователя">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                </svg>
+            </a>
+            <div class="hamburger-menu">
+                <input type="checkbox" id="menu-toggle" class="menu-toggle-checkbox">
+                <label for="menu-toggle" class="menu-toggle-label">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </label>
+                <nav class="side-nav">
+                    <ul>
+                        <li><a href="#">Схемы авто</a></li>
+                        <li><a href="#">Обучение</a></li>
+                        <li><a href="#">База знаний</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </header>
 
     <main>
@@ -275,37 +427,43 @@
             <p>Все необходимые инструменты в одном месте: от электросхем до базы знаний по неисправностям.</p>
         </section>
 
+        <!-- РАЗДЕЛ: Логотипы брендов -->
+        <section class="brands-section">
+            <h2 class="section-title">Поддерживаемые марки автомобилей</h2>
+            <div class="brands-grid">
+                <!-- SVG логотипы для единого стиля -->
+                <a href="#" class="brand-logo" title="Audi"><svg viewBox="0 0 512 512"><path d="M414.43 256.57c0 43.3-16.33 82.1-43.57 111.3-27.23 29.2-64.43 46.1-105.73 46.1s-78.5-16.9-105.73-46.1c-27.23-29.2-43.57-68-43.57-111.3s16.33-82.1 43.57-111.3c27.23-29.2 64.43-46.1 105.73-46.1s78.5 16.9 105.73 46.1c27.24 29.2 43.57 68 43.57 111.3zm-39.53 0c0-30.2-11.6-57.2-30.5-77.5-18.9-20.3-44.9-32.2-74.8-32.2s-55.9 11.9-74.8 32.2c-18.9 20.3-30.5 47.3-30.5 77.5s11.6 57.2 30.5 77.5c18.9 20.3 44.9 32.2 74.8 32.2s55.9-11.9 74.8-32.2c18.9-20.3 30.5-47.3 30.5-77.5zM256.57 99.13c-41.3 0-78.5 16.9-105.73 46.1-27.23 29.2-43.57 68-43.57 111.3s16.33 82.1 43.57 111.3c27.23 29.2 64.43 46.1 105.73 46.1M256.57 413.43c-41.3 0-78.5-16.9-105.73-46.1-27.23-29.2-43.57-68-43.57-111.3s16.33-82.1 43.57-111.3c27.23-29.2 64.43-46.1 105.73-46.1M256.57 217.03c-30.2 0-57.2 11.6-77.5 30.5-20.3 18.9-32.2 44.9-32.2 74.8s11.9 55.9 32.2 74.8c20.3 18.9 47.3 30.5 77.5 30.5M256.57 373.93c-30.2 0-57.2-11.6-77.5-30.5-20.3-18.9-32.2-44.9-32.2-74.8s11.9-55.9 32.2-74.8c20.3-18.9 47.3-30.5 77.5-30.5"/></svg></a>
+                <a href="#" class="brand-logo" title="Mercedes-Benz"><svg viewBox="0 0 512 512"><path d="M256 41.337c-118.492 0-214.663 96.17-214.663 214.663S137.508 470.663 256 470.663 470.663 374.492 470.663 256 374.492 41.337 256 41.337zm0 38.4c97.462 0 176.263 78.801 176.263 176.263S353.462 432.263 256 432.263 79.737 353.462 79.737 256 158.538 79.737 256 79.737z"/><path d="M256 94.4l82.667 161.6H173.333zM256 94.4L256 307.2M256 307.2l-107.52-53.76M256 307.2l107.52-53.76" fill="none" stroke="currentColor" stroke-width="35" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                <a href="#" class="brand-logo" title="BMW"><svg viewBox="0 0 512 512"><path d="M256 41.337C137.508 41.337 41.337 137.508 41.337 256S137.508 470.663 256 470.663 470.663 374.492 470.663 256 374.492 41.337 256 41.337zM102.4 256H256V102.4c-84.8 0-153.6 68.8-153.6 153.6zM256 409.6V256H409.6c0 84.8-68.8 153.6-153.6 153.6z"/><path d="M256 102.4V256h153.6C409.6 171.2 340.8 102.4 256 102.4zM102.4 256H256v153.6C171.2 409.6 102.4 340.8 102.4 256z" fill="#FFF"/></svg></a>
+                <a href="#" class="brand-logo" title="Volkswagen"><svg viewBox="0 0 512 512"><path d="M256 41.337c-118.492 0-214.663 96.17-214.663 214.663S137.508 470.663 256 470.663 470.663 374.492 470.663 256 374.492 41.337 256 41.337zm0 38.4c97.462 0 176.263 78.801 176.263 176.263S353.462 432.263 256 432.263 79.737 353.462 79.737 256 158.538 79.737 256 79.737z"/><path d="M166.4 153.6l-38.4 128h51.2l25.6-89.6 25.6 89.6h51.2l64-128h-51.2l-38.4 89.6-38.4-89.6zM307.2 153.6l-64 128h51.2l38.4-89.6 38.4 89.6h51.2l-64-128z" fill="currentColor"/></svg></a>
+                <a href="#" class="brand-logo" title="Toyota"><svg viewBox="0 0 512 512"><path d="M256 41.337c-118.492 0-214.663 96.17-214.663 214.663S137.508 470.663 256 470.663 470.663 374.492 470.663 256 374.492 41.337 256 41.337zm0 38.4c97.462 0 176.263 78.801 176.263 176.263S353.462 432.263 256 432.263 79.737 353.462 79.737 256 158.538 79.737 256 79.737z"/><ellipse cx="256" cy="256" rx="100" ry="150" fill="none" stroke="currentColor" stroke-width="35"/><ellipse cx="256" cy="256" rx="40" ry="150" fill="none" stroke="currentColor" stroke-width="35" transform="rotate(90 256 256)"/></svg></a>
+                <a href="#" class="brand-logo" title="Ford"><svg viewBox="0 0 512 512"><ellipse cx="256" cy="256" rx="200" ry="100" fill="currentColor"/><text x="256" y="280" font-family="serif" font-size="120" fill="#12141D" text-anchor="middle" font-style="italic" font-weight="bold">Ford</text></svg></a>
+                <a href="#" class="brand-logo" title="Honda"><svg viewBox="0 0 512 512"><path d="M128 128h256v256H128z" fill="none"/><path d="M160 384V224c0-44.183 35.817-80 80-80h32c44.183 0 80 35.817 80 80v160M160 288h192" stroke="currentColor" stroke-width="35" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a>
+                <a href="#" class="brand-logo" title="Kia"><svg viewBox="0 0 512 512"><ellipse cx="256" cy="256" rx="200" ry="100" fill="none" stroke="currentColor" stroke-width="35"/><text x="256" y="280" font-family="sans-serif" font-size="120" fill="currentColor" text-anchor="middle" font-weight="bold">KIA</text></svg></a>
+            </div>
+        </section>
+
         <!-- Разделы сайта в виде карточек -->
         <section class="features-section">
             <h2 class="section-title">Наши инструменты</h2>
             <div class="features-grid">
                 
-                <!-- Карточка 1: Схемы -->
                 <div class="feature-card">
-                    <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+                    <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     <h3>Схемы авто</h3>
                     <p>Подробные интерактивные электросхемы, распиновки блоков и схемы расположения компонентов.</p>
                     <a href="#" class="btn">Перейти к схемам</a>
                 </div>
 
-                <!-- Карточка 2: Обучение -->
                 <div class="feature-card">
-                     <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                     <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <h3>Учебный центр</h3>
                     <p>Видеоуроки, подробные руководства и статьи от ведущих экспертов в области автодиагностики.</p>
                     <a href="#" class="btn">Начать обучение</a>
                 </div>
 
-                <!-- Карточка 3: База знаний -->
                 <div class="feature-card">
-                    <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                    </svg>
+                    <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
                     <h3>База знаний</h3>
                     <p>Технические характеристики, бюллетени (TSB) и база данных известных неисправностей по моделям.</p>
                     <a href="#" class="btn">Искать в базе</a>
