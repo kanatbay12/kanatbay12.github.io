@@ -7,35 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #12141D; --bg-light: #1E222E; --text-primary: #EAF0F0;
-            --text-secondary: #a9b3c4; --accent-primary: #00A9FF; --border-color: #33394b;
-            --error-color: #ff4d4d; --font-header: 'Exo 2', sans-serif; --font-body: 'Roboto', sans-serif;
-        }
-        *, *::before, *::after { box-sizing: border-box; }
-        body { margin: 0; font-family: var(--font-body); background-color: var(--bg-dark); color: var(--text-primary); font-size: 16px; line-height: 1.6; }
-        .container { max-width: 900px; margin: 2rem auto; padding: 2rem; }
-        .btn { display: inline-block; padding: 0.8rem 1.8rem; background-color: var(--accent-primary); color: var(--bg-dark); text-decoration: none; font-weight: bold; border-radius: 8px; transition: background-color 0.3s, color 0.3s; border: 2px solid var(--accent-primary); cursor: pointer; }
-        .btn-outline { background: transparent; color: var(--accent-primary); }
-        .btn-outline:hover { background: var(--accent-primary); color: var(--bg-dark); }
-        .hidden { display: none !important; }
-        h1, h2 { font-family: var(--font-header); text-align: center; }
-        .form-container { background-color: var(--bg-light); padding: 2rem; border-radius: 12px; max-width: 400px; margin: 2rem auto; }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
-        .form-group input, .form-group select { width: 100%; padding: 12px 15px; background-color: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-size: 1rem; }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent-primary); }
-        .error-message { color: var(--error-color); text-align: center; margin-bottom: 1rem; }
-        .admin-panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 2rem; }
-        .admin-brands-list { max-height: 50vh; overflow-y: auto; margin-top: 2rem; }
-        .admin-brand-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border-color); }
-        .admin-brand-info { display: flex; gap: 1rem; align-items: center; }
-        .admin-brand-info span { min-width: 100px; }
-        .admin-brand-actions button { background: none; border: none; color: var(--text-secondary); cursor: pointer; transition: color 0.3s; }
-        .admin-brand-actions button:hover { color: var(--accent-primary); }
-        .admin-brand-actions .delete-btn:hover { color: var(--error-color); }
-    </style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
