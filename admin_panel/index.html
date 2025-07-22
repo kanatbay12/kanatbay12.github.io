@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -29,37 +29,171 @@
     <!-- Основная часть админ-панели (скрыта до входа) -->
     <div id="admin-panel-section" class="container hidden">
         <div class="admin-panel-header">
-            <h1>Панель управления марками</h1>
+            <h1 id="admin-panel-title">Панель управления</h1>
             <button id="admin-logout-btn" class="btn btn-outline">Выйти</button>
         </div>
         
-        <form id="admin-brand-form" class="form-container" style="max-width: none;">
-            <h2 id="admin-form-title">Добавить новую марку</h2>
-            <input type="hidden" id="admin-brand-id">
-            <div class="form-group">
-                <label for="admin-brand-name">Название марки</label>
-                <input type="text" id="admin-brand-name" required>
-            </div>
-            <div class="form-group">
-                <label for="admin-brand-continent">Континент</label>
-                <select id="admin-brand-continent" required>
-                    <option value="europe">Европа</option>
-                    <option value="asia">Азия</option>
-                    <option value="america">Америка</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="admin-brand-country">Код страны (2 буквы, en)</label>
-                <input type="text" id="admin-brand-country" required maxlength="2" style="text-transform: lowercase;">
-            </div>
-            <button type="submit" class="btn" id="admin-form-submit-btn">Добавить марку</button>
-            <button type="button" class="btn btn-outline" id="admin-form-cancel-btn" style="display:none; margin-top: 1rem;">Отмена</button>
-        </form>
-        <div class="admin-brands-list" id="admin-brands-list">
-            <!-- Список брендов для управления -->
+        <!-- View для управления марками -->
+        <div id="admin-brands-view">
+            <form id="admin-brand-form" class="form-container" style="max-width: none;">
+                <h2 id="admin-brand-form-title">Добавить марку</h2>
+                <input type="hidden" id="admin-brand-id">
+                <div class="form-group"><label for="admin-brand-name">Название марки</label><input type="text" id="admin-brand-name" required></div>
+                <div class="form-group"><label for="admin-brand-continent">Континент</label><select id="admin-brand-continent" required><option value="europe">Европа</option><option value="asia">Азия</option><option value="america">Америка</option></select></div>
+                <div class="form-group"><label for="admin-brand-country">Код страны (2 буквы, en)</label><input type="text" id="admin-brand-country" required maxlength="2" style="text-transform: lowercase;"></div>
+                <button type="submit" class="btn" id="admin-brand-submit-btn">Добавить марку</button>
+                <button type="button" class="btn btn-outline" id="admin-brand-cancel-btn" style="display:none;">Отмена</button>
+            </form>
+            <div class="admin-brands-list" id="admin-brands-list"></div>
+        </div>
+
+        <!-- View для управления моделями -->
+        <div id="admin-models-view" class="hidden">
+            <button id="back-to-brands-btn" class="btn btn-outline" style="margin-bottom: 1rem;">← Назад к маркам</button>
+            <form id="admin-model-form" class="form-container" style="max-width: none;">
+                <h2 id="admin-model-form-title">Добавить модель</h2>
+                <input type="hidden" id="admin-model-id">
+                <div class="form-group"><label for="admin-model-name">Название модели</label><input type="text" id="admin-model-name" required></div>
+                <div class="form-group"><label for="admin-model-years">Годы выпуска</label><input type="text" id="admin-model-years"></div>
+                <div class="form-group"><label for="admin-model-engine">Двигатели</label><textarea id="admin-model-engine" rows="3"></textarea></div>
+                <div class="form-group"><label for="admin-model-issues">Типовые неисправности</label><textarea id="admin-model-issues" rows="3"></textarea></div>
+                <button type="submit" class="btn" id="admin-model-submit-btn">Добавить модель</button>
+                <button type="button" class="btn btn-outline" id="admin-model-cancel-btn" style="display:none;">Отмена</button>
+            </form>
+            <div class="admin-brands-list" id="admin-models-list"></div>
         </div>
     </div>
-    <script type="module" src="scripts/admin.js"></script>
+
     <script type="module" src="scripts/config.js"></script>
+    <script>import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+
+// Инициализация Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+        // ===============================================================
+        // UID АДМИНИСТРАТОРА
+        // Замените "YOUR_ADMIN_UID" на реальный UID вашего аккаунта
+        // администратора из Firebase Authentication
+        // ===============================================================
+        const adminUid = "9B9EWaCLoWOq8J8f8vrmP6Yx4vs1";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyBK7irH8u4HNgcnxAusGNzj7WHzJj0ka_M",
+          authDomain: "autodiag-kana.firebaseapp.com",
+          projectId: "autodiag-kana",
+          storageBucket: "autodiag-kana.firebasestorage.app",
+          messagingSenderId: "643930483001",
+          appId: "1:643930483001:web:be4621c52f342abc73a0e8"
+        };
+
+// Элементы UI
+const ui = {
+    loginSection: document.getElementById('admin-login-section'),
+    panelSection: document.getElementById('admin-panel-section'),
+    loginForm: document.getElementById('admin-login-form'),
+    loginError: document.getElementById('admin-login-error'),
+    logoutBtn: document.getElementById('admin-logout-btn'),
+    panelTitle: document.getElementById('admin-panel-title'),
+    // Brands
+    brandsView: document.getElementById('admin-brands-view'),
+    brandForm: document.getElementById('admin-brand-form'),
+    brandsList: document.getElementById('admin-brands-list'),
+    brandFormTitle: document.getElementById('admin-brand-form-title'),
+    brandSubmitBtn: document.getElementById('admin-brand-submit-btn'),
+    brandCancelBtn: document.getElementById('admin-brand-cancel-btn'),
+    brandIdField: document.getElementById('admin-brand-id'),
+    // Models
+    modelsView: document.getElementById('admin-models-view'),
+    backToBrandsBtn: document.getElementById('back-to-brands-btn'),
+    modelForm: document.getElementById('admin-model-form'),
+    modelsList: document.getElementById('admin-models-list'),
+    modelFormTitle: document.getElementById('admin-model-form-title'),
+    modelSubmitBtn: document.getElementById('admin-model-submit-btn'),
+    modelCancelBtn: document.getElementById('admin-model-cancel-btn'),
+    modelIdField: document.getElementById('admin-model-id'),
+};
+
+let masterBrandList = [];
+let selectedBrandForModels = null;
+let unsubscribeModels = null; // Функция для отписки от слушателя моделей
+
+// Проверка состояния авторизации
+onAuthStateChanged(auth, user => {
+    if (user && user.uid === adminUid) {
+        ui.loginSection.classList.add('hidden');
+        ui.panelSection.classList.remove('hidden');
+        setupAdminPanelListeners();
+    } else {
+        ui.loginSection.classList.remove('hidden');
+        ui.panelSection.classList.add('hidden');
+    }
+});
+
+// Вход и выход
+ui.loginForm.addEventListener('submit', (e) => { e.preventDefault(); const email = ui.loginForm.querySelector('input[type="email"]').value; const password = ui.loginForm.querySelector('input[type="password"]').value; ui.loginError.classList.add('hidden'); signInWithEmailAndPassword(auth, email, password).catch(error => { ui.loginError.textContent = "Неверный email или пароль."; ui.loginError.classList.remove('hidden'); }); });
+ui.logoutBtn.addEventListener('click', () => signOut(auth));
+
+function setupAdminPanelListeners() {
+    onSnapshot(collection(db, "brands"), (snapshot) => {
+        masterBrandList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderAdminBrandsList();
+    });
+
+    // Управление марками
+    ui.brandForm.addEventListener('submit', async (e) => { e.preventDefault(); const id = ui.brandIdField.value; const data = { name: document.getElementById('admin-brand-name').value, continent: document.getElementById('admin-brand-continent').value, country: document.getElementById('admin-brand-country').value.toLowerCase() }; try { if (id) { await updateDoc(doc(db, 'brands', id), data); } else { await addDoc(collection(db, 'brands'), data); } resetBrandForm(); } catch (error) { console.error("Ошибка сохранения марки:", error); } });
+    ui.brandsList.addEventListener('click', (e) => { const target = e.target.closest('button'); if (!target) return; const id = target.dataset.id; if (target.classList.contains('edit-btn')) { const brand = masterBrandList.find(b => b.id === id); ui.brandIdField.value = brand.id; document.getElementById('admin-brand-name').value = brand.name; document.getElementById('admin-brand-continent').value = brand.continent; document.getElementById('admin-brand-country').value = brand.country; ui.brandFormTitle.textContent = 'Редактировать марку'; ui.brandSubmitBtn.textContent = 'Сохранить'; ui.brandCancelBtn.style.display = 'inline-block'; } if (target.classList.contains('delete-btn')) { if (confirm('Удалить марку и все ее модели?')) { deleteDoc(doc(db, 'brands', id)); } } if (target.classList.contains('models-btn')) { selectedBrandForModels = masterBrandList.find(b => b.id === id); showModelsView(); } });
+    ui.brandCancelBtn.addEventListener('click', resetBrandForm);
+
+    // Управление моделями
+    ui.backToBrandsBtn.addEventListener('click', showBrandsView);
+    ui.modelForm.addEventListener('submit', async (e) => { e.preventDefault(); const id = ui.modelIdField.value; const data = { name: document.getElementById('admin-model-name').value, years: document.getElementById('admin-model-years').value, engine: document.getElementById('admin-model-engine').value, issues: document.getElementById('admin-model-issues').value, }; try { const collectionRef = collection(db, `brands/${selectedBrandForModels.id}/models`); if (id) { await updateDoc(doc(collectionRef, id), data); } else { await addDoc(collectionRef, data); } resetModelForm(); } catch (error) { console.error("Ошибка сохранения модели:", error); } });
+    ui.modelsList.addEventListener('click', (e) => { const target = e.target.closest('button'); if (!target) return; const id = target.dataset.id; if (target.classList.contains('edit-btn')) { const model = JSON.parse(target.dataset.model); ui.modelIdField.value = id; document.getElementById('admin-model-name').value = model.name; document.getElementById('admin-model-years').value = model.years; document.getElementById('admin-model-engine').value = model.engine; document.getElementById('admin-model-issues').value = model.issues; ui.modelFormTitle.textContent = 'Редактировать модель'; ui.modelSubmitBtn.textContent = 'Сохранить'; ui.modelCancelBtn.style.display = 'inline-block'; } if (target.classList.contains('delete-btn')) { if (confirm('Удалить эту модель?')) { deleteDoc(doc(db, `brands/${selectedBrandForModels.id}/models`, id)); } } });
+    ui.modelCancelBtn.addEventListener('click', resetModelForm);
+}
+
+function renderAdminBrandsList() {
+    ui.brandsList.innerHTML = '';
+    [...masterBrandList].sort((a,b) => a.name.localeCompare(b.name)).forEach(brand => {
+        const item = document.createElement('div');
+        item.className = 'admin-brand-item';
+        item.innerHTML = `<div class="admin-brand-info"><span><strong>${brand.name}</strong></span><span>${brand.continent}</span><span>${brand.country}</span></div><div class="admin-brand-actions"><button class="models-btn" data-id="${brand.id}" title="Модели">⚙️</button><button class="edit-btn" data-id="${brand.id}" title="Редактировать">✏️</button><button class="delete-btn" data-id="${brand.id}" title="Удалить">🗑️</button></div>`;
+        ui.brandsList.appendChild(item);
+    });
+}
+
+function showBrandsView() {
+    ui.brandsView.classList.remove('hidden');
+    ui.modelsView.classList.add('hidden');
+    ui.panelTitle.textContent = 'Панель управления марками';
+    if (unsubscribeModels) unsubscribeModels();
+}
+
+function showModelsView() {
+    ui.brandsView.classList.add('hidden');
+    ui.modelsView.classList.remove('hidden');
+    ui.panelTitle.textContent = `Модели для: ${selectedBrandForModels.name}`;
+    resetModelForm();
+    
+    const modelsRef = collection(db, `brands/${selectedBrandForModels.id}/models`);
+    unsubscribeModels = onSnapshot(modelsRef, (snapshot) => {
+        ui.modelsList.innerHTML = '';
+        snapshot.docs.sort((a,b) => a.data().name.localeCompare(b.data().name)).forEach(doc => {
+            const model = { id: doc.id, ...doc.data() };
+            const item = document.createElement('div');
+            item.className = 'admin-brand-item';
+            item.innerHTML = `<div class="admin-brand-info"><span><strong>${model.name}</strong></span></div><div class="admin-brand-actions"><button class="edit-btn" data-id="${model.id}" data-model='${JSON.stringify(model)}' title="Редактировать">✏️</button><button class="delete-btn" data-id="${model.id}" title="Удалить">🗑️</button></div>`;
+            ui.modelsList.appendChild(item);
+        });
+    });
+}
+
+function resetBrandForm() { ui.brandForm.reset(); ui.brandIdField.value = ''; ui.brandFormTitle.textContent = 'Добавить новую марку'; ui.brandSubmitBtn.textContent = 'Добавить марку'; ui.brandCancelBtn.style.display = 'none'; }
+function resetModelForm() { ui.modelForm.reset(); ui.modelIdField.value = ''; ui.modelFormTitle.textContent = 'Добавить модель'; ui.modelSubmitBtn.textContent = 'Добавить модель'; ui.modelCancelBtn.style.display = 'none'; }
+</script>
 </body>
 </html>
