@@ -299,6 +299,8 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 1.5rem;
+            min-height: 200px; /* Для видимости лоадера */
+            position: relative;
         }
 
         .brand-card {
@@ -313,9 +315,6 @@
             position: relative;
             overflow: hidden;
             transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s, opacity 0.4s;
-        }
-        .brand-card.hidden {
-            display: none;
         }
 
         .brand-card:hover {
@@ -356,6 +355,26 @@
             color: var(--text-primary);
         }
         
+        /* --- Индикатор загрузки --- */
+        .loader {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--border-color);
+            border-bottom-color: var(--accent-primary);
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* --- Назначение флагов через data-атрибут --- */
         .brand-card[data-country="de"]::before { background-image: url('https://flagcdn.com/de.svg'); }
         .brand-card[data-country="jp"]::before { background-image: url('https://flagcdn.com/jp.svg'); }
@@ -503,28 +522,8 @@
 
             <!-- Сетка брендов -->
             <div class="brands-page-grid" id="brands-grid">
-                <a href="#" class="brand-card" data-country="de" data-continent="europe" data-name="Audi"><span>Audi</span></a>
-                <a href="#" class="brand-card" data-country="de" data-continent="europe" data-name="BMW"><span>BMW</span></a>
-                <a href="#" class="brand-card" data-country="us" data-continent="america" data-name="Ford"><span>Ford</span></a>
-                <a href="#" class="brand-card" data-country="jp" data-continent="asia" data-name="Honda"><span>Honda</span></a>
-                <a href="#" class="brand-card" data-country="kr" data-continent="asia" data-name="Hyundai"><span>Hyundai</span></a>
-                <a href="#" class="brand-card" data-country="kr" data-continent="asia" data-name="Kia"><span>Kia</span></a>
-                <a href="#" class="brand-card" data-country="jp" data-continent="asia" data-name="Lexus"><span>Lexus</span></a>
-                <a href="#" class="brand-card" data-country="jp" data-continent="asia" data-name="Mazda"><span>Mazda</span></a>
-                <a href="#" class="brand-card" data-country="de" data-continent="europe" data-name="Mercedes"><span>Mercedes</span></a>
-                <a href="#" class="brand-card" data-country="jp" data-continent="asia" data-name="Mitsubishi"><span>Mitsubishi</span></a>
-                <a href="#" class="brand-card" data-country="jp" data-continent="asia" data-name="Nissan"><span>Nissan</span></a>
-                <a href="#" class="brand-card" data-country="jp" data-continent="asia" data-name="Subaru"><span>Subaru</span></a>
-                <a href="#" class="brand-card" data-country="jp" data-continent="asia" data-name="Toyota"><span>Toyota</span></a>
-                <a href="#" class="brand-card" data-country="de" data-continent="europe" data-name="Volkswagen"><span>Volkswagen</span></a>
-                <a href="#" class="brand-card" data-country="se" data-continent="europe" data-name="Volvo"><span>Volvo</span></a>
-                <a href="#" class="brand-card" data-country="ru" data-continent="europe" data-name="Lada"><span>Lada</span></a>
-                <a href="#" class="brand-card" data-country="gb" data-continent="europe" data-name="Land Rover"><span>Land Rover</span></a>
-                <a href="#" class="brand-card" data-country="fr" data-continent="europe" data-name="Renault"><span>Renault</span></a>
-                <a href="#" class="brand-card" data-country="fr" data-continent="europe" data-name="Peugeot"><span>Peugeot</span></a>
-                <a href="#" class="brand-card" data-country="it" data-continent="europe" data-name="Fiat"><span>Fiat</span></a>
-                <a href="#" class="brand-card" data-country="cz" data-continent="europe" data-name="Skoda"><span>Skoda</span></a>
-                <a href="#" class="brand-card" data-country="us" data-continent="america" data-name="Chevrolet"><span>Chevrolet</span></a>
+                <!-- Карточки будут добавлены сюда динамически из JS -->
+                 <div class="loader" id="loader"></div>
             </div>
         </section>
     </main>
@@ -543,19 +542,28 @@
             onAuthStateChanged,
             signOut
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            getDocs,
+            addDoc,
+            query,
+            limit
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyD...YOUR_KEY", // Сохраненный ключ
-            authDomain: "autodiag-hub.firebaseapp.com",
-            projectId: "autodiag-hub",
-            storageBucket: "autodiag-hub.appspot.com",
-            messagingSenderId: "1234567890",
-            appId: "1:1234567890:web:abcdef123456"
-        };
+  apiKey: "AIzaSyBK7irH8u4HNgcnxAusGNzj7WHzJj0ka_M",
+  authDomain: "autodiag-kana.firebaseapp.com",
+  projectId: "autodiag-kana",
+  storageBucket: "autodiag-kana.firebasestorage.app",
+  messagingSenderId: "643930483001",
+  appId: "1:643930483001:web:be4621c52f342abc73a0e8"
+};
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app); // Инициализация Firestore
 
         // --- Элементы UI ---
         const menuToggleBtn = document.getElementById('menu-toggle-btn');
@@ -579,12 +587,14 @@
         // --- Элементы для поиска и фильтрации ---
         const searchInput = document.getElementById('search-input');
         const brandsGrid = document.getElementById('brands-grid');
-        const brandCards = Array.from(brandsGrid.querySelectorAll('.brand-card'));
         const filterToggleBtn = document.getElementById('filter-toggle-btn');
         const filterDropdown = document.getElementById('filter-dropdown');
         const sortOptions = document.getElementById('sort-options');
         const continentOptions = document.getElementById('continent-options');
         const countrySelect = document.getElementById('country-select');
+        const loader = document.getElementById('loader');
+
+        let masterBrandList = []; // Массив для хранения всех брендов из БД
 
         // --- Логика меню (без изменений) ---
         if (menuToggleBtn && sideNav) {
@@ -604,37 +614,33 @@
         profileButton.addEventListener('click', (event) => { event.stopPropagation(); profileDropdown.classList.toggle('is-open'); });
         document.addEventListener('click', () => { if(profileDropdown.classList.contains('is-open')) profileDropdown.classList.remove('is-open'); });
 
-        // --- Логика Firebase (без изменений) ---
+        // --- Логика Firebase Auth (без изменений) ---
         registerForm.addEventListener('submit', (e) => { e.preventDefault(); const email = document.getElementById('register-email').value; const password = document.getElementById('register-password').value; registerError.style.display = 'none'; createUserWithEmailAndPassword(auth, email, password).then(() => closeAuthModal()).catch((error) => { registerError.textContent = getAuthErrorMessage(error.code); registerError.style.display = 'block'; }); });
         loginForm.addEventListener('submit', (e) => { e.preventDefault(); const email = document.getElementById('login-email').value; const password = document.getElementById('login-password').value; loginError.style.display = 'none'; signInWithEmailAndPassword(auth, email, password).then(() => closeAuthModal()).catch((error) => { loginError.textContent = getAuthErrorMessage(error.code); loginError.style.display = 'block'; }); });
         logoutBtn.addEventListener('click', () => { signOut(auth).catch((error) => console.error('Ошибка выхода:', error)); });
         onAuthStateChanged(auth, (user) => { if (user) { profileLoginBtn.style.display = 'none'; profileArea.style.display = 'block'; profileEmail.textContent = user.email; profileAvatar.textContent = user.email.charAt(0).toUpperCase(); } else { profileLoginBtn.style.display = 'block'; profileArea.style.display = 'none'; } });
         function getAuthErrorMessage(errorCode) { switch (errorCode) { case 'auth/invalid-email': return 'Неверный формат email адреса.'; case 'auth/user-not-found': case 'auth/wrong-password': case 'auth/invalid-credential': return 'Неверный email или пароль.'; case 'auth/email-already-in-use': return 'Этот email уже зарегистрирован.'; case 'auth/weak-password': return 'Пароль слишком слабый (минимум 6 символов).'; default: return 'Произошла неизвестная ошибка. Попробуйте снова.'; } }
 
-        // --- НОВАЯ ЛОГИКА: Поиск, Фильтрация и Сортировка ---
-        
-        // Динамическое создание списка стран
-        const countries = { 'de': 'Германия', 'jp': 'Япония', 'us': 'США', 'kr': 'Корея', 'se': 'Швеция', 'ru': 'Россия', 'gb': 'Англия', 'fr': 'Франция', 'it': 'Италия', 'cz': 'Чехия' };
-        Object.entries(countries).forEach(([code, name]) => {
-            const option = document.createElement('option');
-            option.value = code;
-            option.textContent = name;
-            countrySelect.appendChild(option);
-        });
+        // --- НОВАЯ ЛОГИКА: Firestore, Поиск, Фильтрация и Сортировка ---
 
-        // Логика открытия/закрытия дропдауна фильтров
-        filterToggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            filterDropdown.classList.toggle('is-open');
-            filterToggleBtn.classList.toggle('is-open');
-        });
-        document.addEventListener('click', () => {
-            if (filterDropdown.classList.contains('is-open')) {
-                filterDropdown.classList.remove('is-open');
-                filterToggleBtn.classList.remove('is-open');
+        // Функция для рендеринга карточек брендов
+        function renderBrands(brandsToRender) {
+            brandsGrid.innerHTML = ''; // Очищаем сетку
+            if (brandsToRender.length === 0) {
+                brandsGrid.innerHTML = `<p>Марки не найдены.</p>`;
+                return;
             }
-        });
-        filterDropdown.addEventListener('click', e => e.stopPropagation());
+            brandsToRender.forEach(brand => {
+                const card = document.createElement('a');
+                card.href = '#';
+                card.className = 'brand-card';
+                card.dataset.country = brand.country;
+                card.dataset.continent = brand.continent;
+                card.dataset.name = brand.name;
+                card.innerHTML = `<span>${brand.name}</span>`;
+                brandsGrid.appendChild(card);
+            });
+        }
 
         // Главная функция для применения всех фильтров и сортировки
         function applyFiltersAndSorting() {
@@ -644,52 +650,109 @@
             const countryValue = countrySelect.value;
             
             // 1. Фильтрация
-            const filteredCards = brandCards.filter(card => {
-                const name = card.dataset.name.toLowerCase();
-                const continent = card.dataset.continent;
-                const country = card.dataset.country;
-
-                const searchMatch = name.includes(searchTerm);
-                const continentMatch = (continentValue === 'all' || continent === continentValue);
-                const countryMatch = (countryValue === 'all' || country === countryValue);
-
+            const filteredBrands = masterBrandList.filter(brand => {
+                const searchMatch = brand.name.toLowerCase().includes(searchTerm);
+                const continentMatch = (continentValue === 'all' || brand.continent === continentValue);
+                const countryMatch = (countryValue === 'all' || brand.country === countryValue);
                 return searchMatch && continentMatch && countryMatch;
             });
 
             // 2. Сортировка
-            filteredCards.sort((a, b) => {
-                const nameA = a.dataset.name;
-                const nameB = b.dataset.name;
+            filteredBrands.sort((a, b) => {
                 if (sortValue === 'az') {
-                    return nameA.localeCompare(nameB);
+                    return a.name.localeCompare(b.name);
                 } else {
-                    return nameB.localeCompare(nameA);
+                    return b.name.localeCompare(a.name);
                 }
             });
 
             // 3. Отображение
-            brandsGrid.innerHTML = ''; // Очищаем сетку
-            filteredCards.forEach(card => brandsGrid.appendChild(card)); // Добавляем отсортированные
+            renderBrands(filteredBrands);
+        }
+        
+        // Функция для загрузки брендов из Firestore
+        async function fetchBrands() {
+            try {
+                const brandsCollection = collection(db, "brands");
+                const querySnapshot = await getDocs(brandsCollection);
+                
+                querySnapshot.forEach((doc) => {
+                    masterBrandList.push({ id: doc.id, ...doc.data() });
+                });
+                
+                loader.style.display = 'none';
+                applyFiltersAndSorting(); // Первичный рендер после загрузки
+
+            } catch (error) {
+                console.error("Ошибка загрузки брендов: ", error);
+                brandsGrid.innerHTML = `<p>Не удалось загрузить список марок. Попробуйте позже.</p>`;
+            }
+        }
+        
+        // Функция для начального заполнения БД (сработает 1 раз)
+        async function seedDatabase() {
+            const brandsCollection = collection(db, "brands");
+            // Проверяем, есть ли уже документы в коллекции
+            const initialQuery = query(brandsCollection, limit(1));
+            const snapshot = await getDocs(initialQuery);
+            
+            if (snapshot.empty) {
+                console.log("База данных пуста. Заполняем...");
+                const initialBrands = [
+                    { name: "Audi", country: "de", continent: "europe" }, { name: "BMW", country: "de", continent: "europe" },
+                    { name: "Ford", country: "us", continent: "america" }, { name: "Honda", country: "jp", continent: "asia" },
+                    { name: "Hyundai", country: "kr", continent: "asia" }, { name: "Kia", country: "kr", continent: "asia" },
+                    { name: "Lexus", country: "jp", continent: "asia" }, { name: "Mazda", country: "jp", continent: "asia" },
+                    { name: "Mercedes", country: "de", continent: "europe" }, { name: "Mitsubishi", country: "jp", continent: "asia" },
+                    { name: "Nissan", country: "jp", continent: "asia" }, { name: "Subaru", country: "jp", continent: "asia" },
+                    { name: "Toyota", country: "jp", continent: "asia" }, { name: "Volkswagen", country: "de", continent: "europe" },
+                    { name: "Volvo", country: "se", continent: "europe" }, { name: "Lada", country: "ru", continent: "europe" },
+                    { name: "Land Rover", country: "gb", continent: "europe" }, { name: "Renault", country: "fr", continent: "europe" },
+                    { name: "Peugeot", country: "fr", continent: "europe" }, { name: "Fiat", country: "it", continent: "europe" },
+                    { name: "Skoda", country: "cz", continent: "europe" }, { name: "Chevrolet", country: "us", continent: "america" }
+                ];
+                for (const brand of initialBrands) {
+                    await addDoc(brandsCollection, brand);
+                }
+                console.log("База данных успешно заполнена.");
+            } else {
+                console.log("База данных уже содержит данные.");
+            }
         }
 
-        // Навешиваем слушатели
-        searchInput.addEventListener('input', applyFiltersAndSorting);
-        sortOptions.addEventListener('change', applyFiltersAndSorting);
-        continentOptions.addEventListener('change', (e) => {
-            // При смене континента сбрасываем страну
-            countrySelect.value = 'all';
-            applyFiltersAndSorting();
-        });
-        countrySelect.addEventListener('change', (e) => {
-            // При выборе страны автоматически выставляем нужный континент
-            const selectedCountry = e.target.value;
-            if (selectedCountry !== 'all') {
-                const selectedContinent = document.querySelector(`.brand-card[data-country="${selectedCountry}"]`).dataset.continent;
-                document.querySelector(`input[name="continent"][value="${selectedContinent}"]`).checked = true;
-            }
-            applyFiltersAndSorting();
-        });
+        // --- Инициализация страницы ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Динамическое создание списка стран
+            const countries = { 'de': 'Германия', 'jp': 'Япония', 'us': 'США', 'kr': 'Корея', 'se': 'Швеция', 'ru': 'Россия', 'gb': 'Англия', 'fr': 'Франция', 'it': 'Италия', 'cz': 'Чехия' };
+            Object.entries(countries).forEach(([code, name]) => {
+                const option = document.createElement('option');
+                option.value = code;
+                option.textContent = name;
+                countrySelect.appendChild(option);
+            });
 
+            // Запускаем заполнение и загрузку
+            await seedDatabase();
+            await fetchBrands();
+
+            // Навешиваем слушатели на элементы управления
+            filterToggleBtn.addEventListener('click', (e) => { e.stopPropagation(); filterDropdown.classList.toggle('is-open'); filterToggleBtn.classList.toggle('is-open'); });
+            document.addEventListener('click', () => { if (filterDropdown.classList.contains('is-open')) { filterDropdown.classList.remove('is-open'); filterToggleBtn.classList.remove('is-open'); } });
+            filterDropdown.addEventListener('click', e => e.stopPropagation());
+            searchInput.addEventListener('input', applyFiltersAndSorting);
+            sortOptions.addEventListener('change', applyFiltersAndSorting);
+            continentOptions.addEventListener('change', () => { countrySelect.value = 'all'; applyFiltersAndSorting(); });
+            countrySelect.addEventListener('change', (e) => {
+                const selectedCountry = e.target.value;
+                if (selectedCountry !== 'all') {
+                    const selectedContinent = masterBrandList.find(b => b.country === selectedCountry)?.continent;
+                    if(selectedContinent) {
+                       document.querySelector(`input[name="continent"][value="${selectedContinent}"]`).checked = true;
+                    }
+                }
+                applyFiltersAndSorting();
+            });
+        });
     </script>
 
 </body>
