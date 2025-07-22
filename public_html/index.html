@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <!-- Стили теперь можно вынести в отдельный файл style.css -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -34,8 +34,8 @@
                     <span class="profile-email" id="profile-email"></span>
                 </button>
                 <div class="profile-dropdown" id="profile-dropdown">
-                    <!-- ИЗМЕНЕНИЕ: Теперь это ссылка -->
-                    <a href="https://admin.vash-site.com" target="_blank" class="dropdown-item" id="admin-panel-btn">
+                    <!-- ИЗМЕНЕНИЕ: Теперь это ссылка на ваш будущий админский сайт -->
+                    <a href="https://admin.autodiaghub.com" target="_blank" class="dropdown-item" id="admin-panel-link">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
                         <span>Админ-панель</span>
                     </a>
@@ -90,39 +90,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно админ-панели -->
-    <div id="admin-panel-modal" class="modal">
-        <div class="modal-content">
-            <button id="admin-modal-close" class="modal-close">&times;</button>
-            <form id="admin-brand-form" class="modal-form">
-                <h2 id="admin-form-title">Добавить новую марку</h2>
-                <input type="hidden" id="admin-brand-id">
-                <div class="form-group">
-                    <label for="admin-brand-name">Название марки</label>
-                    <input type="text" id="admin-brand-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="admin-brand-continent">Континент</label>
-                    <select id="admin-brand-continent" required>
-                        <option value="europe">Европа</option>
-                        <option value="asia">Азия</option>
-                        <option value="america">Америка</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="admin-brand-country">Код страны (2 буквы, en)</label>
-                    <input type="text" id="admin-brand-country" required maxlength="2">
-                </div>
-                <button type="submit" class="btn" id="admin-form-submit-btn">Добавить марку</button>
-                <button type="button" class="btn btn-outline" id="admin-form-cancel-btn" style="display:none; margin-top: 1rem;">Отмена</button>
-            </form>
-            <div class="admin-brands-list" id="admin-brands-list">
-                <!-- Список брендов для управления -->
-            </div>
-        </div>
-    </div>
-
-
     <main>
         <section class="brands-page-section">
             <div class="filter-container">
@@ -165,8 +132,8 @@
 
     <footer class="main-footer"><div class="footer-bottom"><p>&copy; 2025 AutoDiagHub. Все права защищены.</p></div></footer>
     
+    <!-- Скрипты для основного сайта -->
     <script type="module" src="scripts/config.js"></script>
     <script type="module" src="scripts/main.js"></script>
-    <!-- SDK Firebase -->
 </body>
 </html>
